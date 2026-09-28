@@ -71,12 +71,14 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
 
   const originalLogo = document.querySelector(".c-logo img");
   const reportLogo = report.querySelector(".c-logo img");
-  try {
-    const response = await fetch(originalLogo.currentSrc || originalLogo.src);
-    if (!response.ok) throw new Error("ロゴを読み込めませんでした。");
-    reportLogo.src = await readAsDataUrl(await response.blob());
-  } catch {
-    reportLogo.src = originalLogo.currentSrc || originalLogo.src;
+  if (originalLogo && reportLogo) {
+    try {
+      const response = await fetch(originalLogo.currentSrc || originalLogo.src);
+      if (!response.ok) throw new Error("ロゴを読み込めませんでした。");
+      reportLogo.src = await readAsDataUrl(await response.blob());
+    } catch {
+      reportLogo.src = originalLogo.currentSrc || originalLogo.src;
+    }
   }
 
   const originalExercises = document.querySelectorAll(".exercise");
@@ -127,7 +129,8 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
       .normalize("NFKC")
       .replace(/[^0-9A-Za-z_-]/g, "")
       .slice(0, 16) || "student";
-  const filename = `keisanki2026_01_${safeNumber}_${fileStamp(savedAt)}.html`;
+  const lessonNumber = document.body.dataset.number || "01";
+  const filename = `keisanki2026_${lessonNumber}_${safeNumber}_${fileStamp(savedAt)}.html`;
   const blob = new Blob(["<!doctype html>\n", report.outerHTML], {
     type: "text/html;charset=utf-8",
   });

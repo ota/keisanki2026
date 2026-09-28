@@ -1,3 +1,4 @@
+<!-- Generated from content/lessonXX.md. Edit the Markdown source. -->
 <!doctype html>
 <html lang="ja">
   <head>
@@ -12,7 +13,7 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body data-lesson="lesson01" data-number="01">
     <div class="shell">
       <aside class="sidebar" aria-label="教材の目次">
         <div class="brand">
@@ -24,406 +25,189 @@
           ><span>01</span>第1回　C言語プログラミング入門</a
         >
         <div class="side-label side-sections">今回の内容</div>
-        <nav class="side-nav" aria-label="今回の内容">
-          <a href="#goals">今回の目標</a><a href="#warmup">タイピング練習</a
-          ><a href="#about-c">C言語とは</a><a href="#first-code">Hello World</a
-          ><a href="#variables">変数の型</a><a href="#challenge">演習問題</a
-          ><a href="#summary">まとめ</a><a href="#save">保存</a>
-        </nav>
+        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#warmup">タイピング練習</a><a href="#about-c">C言語とは</a><a href="#first-code">Hello World</a><a href="#variables">変数の型</a><a href="#challenge">演習問題</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
       </aside>
       <main id="top" class="main">
         <header class="topbar">
           <span>2年 情報コース <span class="slash">/</span> 後期 第1回</span>
         </header>
         <article class="lesson">
-          <h1>第1回　C言語プログラミング<span class="title-tail">入門</span></h1>
+<h1>第1回　C言語プログラミング入門</h1>
+<section id="goals" class="section"><h2>今回の目標</h2><div class="goal-grid"><div class="goal"><b>01</b><strong>Cコードを動かす</strong><span>自分で入力して実行する。</span></div><div class="goal"><b>02</b><strong>変数を作る</strong><span>データに合う型を選ぶ。</span></div><div class="goal"><b>03</b><strong>結果を表示する</strong><span><code>printf</code> の指定子を使う。</span></div></div>
+</section><section class="howto" aria-labelledby="howto-title"><div class="howto-icon">⌨</div><div><h3 id="howto-title">演習の進め方</h3><ul>
+<li>サンプルコードを見て、すぐ下の入力欄に自分で打ち込みます。</li>
+<li>「実行する」を押して、結果を確認します。</li>
+<li>入力内容はパソコンに自動的に保存されます。</li>
+</ul>
+</div></section>
 
-          <section id="goals" class="section">
-            <h2>今回の目標</h2>
-            <div class="goal-grid">
-              <div class="goal">
-                <b>01</b><strong>Cコードを動かす</strong
-                ><span>自分で入力して実行する。</span>
-              </div>
-              <div class="goal">
-                <b>02</b><strong>変数を作る</strong
-                ><span>データに合う型を選ぶ。</span>
-              </div>
-              <div class="goal">
-                <b>03</b><strong>結果を表示する</strong
-                ><span><code>printf</code> の指定子を使う。</span>
-              </div>
-            </div>
-          </section>
+<section id="warmup" class="section"><h2>タイピング練習</h2><ul class="fact-list">
+<li><a href="https://taisoku.com/" target="_blank" rel="noopener noreferrer">タイピング速度測定 ↗</a>で自己ベストを測ります。
+<ul>
+<li>目標はBランク（秒速3打鍵）以上です。</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="about-c" class="section"><h2>C言語とは</h2><div class="about-c-layout"><ul class="c-points">
+<li>1972年に開発された、いろいろな用途に使える「汎用プログラミング言語」です。
+<ul>
+<li>現在でも、現役で使われています。</li>
+</ul>
+</li>
+<li>Pythonなどに比べて、コンピュータの仕組みに近い言語です。
+<ul>
+<li>この特徴を「低レイヤ」と呼びます。</li>
+<li>CPUやメモリの仕組みに沿ってプログラムを書きます。</li>
+<li>文法はPythonなどより厳密で、習得はやや難しいです。</li>
+<li>使いこなせば、Pythonより速く動く場合があります。</li>
+</ul>
+</li>
+<li>OSなど、システムの基盤部分を作る際に使われます。
+<ul>
+<li>この用途から「システムプログラミング言語」と呼ばれます。</li>
+<li>Windows・macOS・LinuxなどのOSの中核に使われています。</li>
+<li>Nintendo Switchなど、ゲーム機の中核にも使われています。</li>
+</ul>
+</li>
+</ul>
+<figure class="c-logo"><img src="/images/c-language-logo.png" alt="C言語のロゴ" width="250" height="262" /><figcaption>C言語のロゴ</figcaption></figure></div>
+</section>
+<section id="first-code" class="section"><h2>Hello World</h2><p>サンプルコードを書き写して、「Hello, World!」と表示してみましょう。</p>
+<div class="concept"><b>A</b><p><code>#include &lt;stdio.h&gt;</code> は画面への出力に使う準備です。</p></div>
+<div class="concept"><b>B</b><p><code>int main(void) { ... }</code> の中に、実行する処理を書きます。</p></div>
+<div class="concept"><b>C</b><p><code>printf</code> で文字を表示し、<code>\n</code> で改行します。</p></div>
+<div class="concept"><b>D</b><p><code>return 0;</code> は正常終了を表します。</p></div>
+<div class="concept"><b>E</b><p><code>//</code> から行末まではコメントです。</p></div>
+<p>入力時は <code>stdio.h</code> のつづり、括弧、<code>;</code> を確認しましょう。</p>
+<div class="exercise" data-exercise="first">
+    <div class="sample-head"><span class="file-icon">C</span> hello.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-first">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-first" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="check"><b>確認</b><p>表示する言葉を変えて、もう一度実行してみましょう。</p>
+</div>
+</section>
+<section id="variables" class="section"><h2>変数の型</h2><p>Cでは、変数を使う前にデータの型を宣言します。</p>
+<table>
+<thead>
+<tr>
+<th>型</th>
+<th>値の例</th>
+<th>表示の目印</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>10（整数）</td>
+<td><code>%d</code></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td>3.14（小数）</td>
+<td><code>%f</code></td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>'A'（1文字）</td>
+<td><code>%c</code></td>
+</tr>
+<tr>
+<td><code>char[]</code></td>
+<td>&quot;Hello&quot;（文字列）</td>
+<td><code>%s</code></td>
+</tr>
+</tbody>
+</table>
+<p>1文字は <code>'A'</code>、文字列は <code>&quot;Hello&quot;</code> のように囲みます。</p>
+<div class="exercise" data-exercise="second">
+    <div class="sample-head"><span class="file-icon">C</span> variables.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-second">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-second" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="check"><b>確認</b><p><code>number</code> と <code>letter</code> を変えると、どの出力が変わりますか。</p>
+</div>
+</section>
+<section id="challenge" class="section challenge-section"><h2>演習問題</h2><p>※AIの使用を禁止します。自分で考えて解答しましょう。</p>
+<h3 class="task-title">課題1 <span>好きな文字列を表示する</span></h3>
+<p>「Hello World」以外の好きな文字列を出力するCプログラムを作成してください。</p>
+<div class="exercise" data-exercise="task1">
 
-          <section class="howto" aria-labelledby="howto-title">
-            <div class="howto-icon">⌨</div>
-            <div>
-              <h3 id="howto-title">演習の進め方</h3>
-              <ul>
-                <li>サンプルコードを見て、すぐ下の入力欄に自分で打ち込みます。</li>
-                <li>「実行する」を押して、結果を確認します。</li>
-                <li>入力内容はパソコンに自動的に保存されます。</li>
-              </ul>
-            </div>
-          </section>
+    <div class="work">
 
-          <section id="warmup" class="section">
-            <h2>タイピング練習</h2>
-            <ul class="fact-list">
-              <li>
-                <a
-                  href="https://taisoku.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >タイピング速度測定 ↗</a
-                >で自己ベストを測ります。
-              </li>
-              <ul><li>目標はBランク（秒速3打鍵）以上です。</li></ul>
-            </ul>
-          </section>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task1" aria-label="課題1のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<h3 class="task-title">課題2 <span>出席番号と氏名を表示する</span></h3>
+<p>整数の変数 <code>number</code> と文字列の変数 <code>name</code> を使い、あなたの出席番号と氏名を表示してください。</p>
+<div class="expected"><span>出力の形</span><code>出席番号 99 番の 太田健吾 です。</code></div>
+<div class="exercise" data-exercise="task2">
 
-          <section id="about-c" class="section">
-            <h2>C言語とは</h2>
-            <div class="about-c-layout">
-              <ul class="c-points">
-                <li>
-                  1972年に開発された、いろいろな用途に使える「汎用プログラミング言語」です。
-                  <ul>
-                    <li>現在でも、現役で使われています。</li>
-                  </ul>
-                </li>
-                <li>
-                  Pythonなどに比べて、コンピュータの仕組みに近い言語です。
-                  <ul>
-                    <li>この特徴を「低レイヤ」と呼びます。</li>
-                    <li>CPUやメモリの仕組みに沿ってプログラムを書きます。</li>
-                    <li>文法はPythonなどより厳密で、習得はやや難しいです。</li>
-                    <li>使いこなせば、Pythonより速く動く場合があります。</li>
-                  </ul>
-                </li>
-                <li>
-                  OSなど、システムの基盤部分を作る際に使われます。
-                  <ul>
-                    <li>
-                      この用途から「システムプログラミング言語」と呼ばれます。
-                    </li>
-                    <li>
-                      Windows・macOS・LinuxなどのOSの中核に使われています。
-                    </li>
-                    <li>
-                      Nintendo Switchなど、ゲーム機の中核にも使われています。
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-              <figure class="c-logo">
-                <img
-                  src="/images/c-language-logo.png"
-                  alt="C言語のロゴ"
-                  width="250"
-                  height="262"
-                />
-                <figcaption>C言語のロゴ</figcaption>
-              </figure>
-            </div>
-          </section>
+    <div class="work">
 
-          <section id="first-code" class="section">
-            <h2>Hello World</h2>
-            <p>サンプルコードを書き写して、「Hello, World!」と表示してみましょう。</p>
-            <div class="concept">
-              <b>A</b>
-              <p>
-                <code>#include &lt;stdio.h&gt;</code>
-                は画面への出力に使う準備です。
-              </p>
-            </div>
-            <div class="concept">
-              <b>B</b>
-              <p>
-                <code>int main(void) { ... }</code>
-                の中に、実行する処理を書きます。
-              </p>
-            </div>
-            <div class="concept">
-              <b>C</b>
-              <p>
-                <code>printf</code> で文字を表示し、<code>\n</code>
-                で改行します。
-              </p>
-            </div>
-            <div class="concept">
-              <b>D</b>
-              <p><code>return 0;</code> は正常終了を表します。</p>
-            </div>
-            <div class="concept">
-              <b>E</b>
-              <p><code>//</code> から行末まではコメントです。</p>
-            </div>
-            <p class="syntax-tip">
-              入力時は <code>stdio.h</code> のつづり、括弧、<code>;</code>
-              を確認しましょう。
-            </p>
-            <div class="exercise" data-exercise="first">
-              <div class="sample-head">
-                <span class="file-icon">C</span> hello.c
-                <span class="sample-tag">見ながら入力</span>
-              </div>
-              <div class="sample-scroll">
-                <canvas
-                  class="sample-canvas"
-                  aria-label="書き写すためのCコードサンプルコード。文字は選択できません。"
-                ></canvas>
-              </div>
-              <div class="work">
-                <label for="editor-first">上記のサンプルコードを書き写してください：</label>
-                <div class="editor-wrap">
-                  <div class="gutter" aria-hidden="true"></div>
-                  <textarea
-                    id="editor-first"
-                    class="editor"
-                    spellcheck="false"
-                    autocapitalize="off"
-                    autocomplete="off"
-                    autocorrect="off"
-                    placeholder="// サンプルコードを見ながら、ここに入力"
-                  ></textarea>
-                </div>
-                <div class="work-footer">
-                  <div class="buttons">
-                    <button type="button" class="run-btn">▶ 実行する</button>
-                  </div>
-                </div>
-                <div class="status" role="status" aria-live="polite"></div>
-                <div class="output" hidden>
-                  <div class="output-head">
-                    実行結果 <span class="exit-code"></span>
-                  </div>
-                  <pre></pre>
-                </div>
-              </div>
-            </div>
-            <div class="check">
-              <b>確認</b>
-              <p>表示する言葉を変えて、もう一度実行してみましょう。</p>
-            </div>
-          </section>
-
-          <section id="variables" class="section">
-            <h2>変数の型</h2>
-            <p>Cでは、変数を使う前にデータの型を宣言します。</p>
-            <div class="type-table">
-              <div>
-                <strong>型</strong><strong>値の例</strong
-                ><strong>表示の目印</strong>
-              </div>
-              <div><code>int</code><span>10（整数）</span><code>%d</code></div>
-              <div>
-                <code>float</code><span>3.14（小数）</span><code>%f</code>
-              </div>
-              <div>
-                <code>char</code><span>'A'（1文字）</span><code>%c</code>
-              </div>
-              <div>
-                <code>char[]</code><span>"Hello"（文字列）</span><code>%s</code>
-              </div>
-            </div>
-            <p class="small-copy">
-              1文字は <code>'A'</code>、文字列は
-              <code>"Hello"</code> のように囲みます。
-            </p>
-            <div class="exercise" data-exercise="second">
-              <div class="sample-head">
-                <span class="file-icon">C</span> variables.c
-                <span class="sample-tag">見ながら入力</span>
-              </div>
-              <div class="sample-scroll">
-                <canvas
-                  class="sample-canvas"
-                  aria-label="書き写すためのCコードサンプルコード。文字は選択できません。"
-                ></canvas>
-              </div>
-              <div class="work">
-                <label for="editor-second">上記のサンプルコードを書き写してください：</label>
-                <div class="editor-wrap">
-                  <div class="gutter" aria-hidden="true"></div>
-                  <textarea
-                    id="editor-second"
-                    class="editor"
-                    spellcheck="false"
-                    autocapitalize="off"
-                    autocomplete="off"
-                    autocorrect="off"
-                    placeholder="// サンプルコードを見ながら、ここに入力"
-                  ></textarea>
-                </div>
-                <div class="work-footer">
-                  <div class="buttons">
-                    <button type="button" class="run-btn">▶ 実行する</button>
-                  </div>
-                </div>
-                <div class="status" role="status" aria-live="polite"></div>
-                <div class="output" hidden>
-                  <div class="output-head">
-                    実行結果 <span class="exit-code"></span>
-                  </div>
-                  <pre></pre>
-                </div>
-              </div>
-            </div>
-            <div class="check">
-              <b>確認</b>
-              <p>
-                <code>number</code> と
-                <code>letter</code> を変えると、どの出力が変わりますか。
-              </p>
-            </div>
-          </section>
-
-          <section id="challenge" class="section challenge-section">
-            <h2>演習問題</h2>
-            <p>※AIの使用を禁止します。自分で考えて解答しましょう。</p>
-            <h3 class="task-title">
-              課題1 <span>好きな文字列を表示する</span>
-            </h3>
-            <p>
-              「Hello
-              World」以外の好きな文字列を出力するCプログラムを作成してください。
-            </p>
-            <div class="exercise" data-exercise="task1">
-              <div class="work">
-                <div class="editor-wrap">
-                  <div class="gutter" aria-hidden="true"></div>
-                  <textarea
-                    id="editor-task1"
-                    aria-label="課題1のコード"
-                    class="editor"
-                    spellcheck="false"
-                    autocapitalize="off"
-                    autocomplete="off"
-                    autocorrect="off"
-                    placeholder="// 自分で考えて入力"
-                  ></textarea>
-                </div>
-                <div class="work-footer">
-                  <div class="buttons">
-                    <button type="button" class="run-btn">▶ 実行する</button>
-                  </div>
-                </div>
-                <div class="status" role="status" aria-live="polite"></div>
-                <div class="output" hidden>
-                  <div class="output-head">
-                    実行結果 <span class="exit-code"></span>
-                  </div>
-                  <pre></pre>
-                </div>
-              </div>
-            </div>
-            <h3 class="task-title">
-              課題2 <span>出席番号と氏名を表示する</span>
-            </h3>
-            <p>
-              整数の変数 <code>number</code> と文字列の変数
-              <code>name</code>
-              を使い、あなたの出席番号と氏名を表示してください。
-            </p>
-            <div class="expected">
-              <span>出力の形</span><code>出席番号 99 番の 太田健吾 です。</code>
-            </div>
-            <div class="exercise" data-exercise="task2">
-              <div class="work">
-                <div class="editor-wrap">
-                  <div class="gutter" aria-hidden="true"></div>
-                  <textarea
-                    id="editor-task2"
-                    aria-label="課題2のコード"
-                    class="editor"
-                    spellcheck="false"
-                    autocapitalize="off"
-                    autocomplete="off"
-                    autocorrect="off"
-                    placeholder="// 自分で考えて入力"
-                  ></textarea>
-                </div>
-                <div class="work-footer">
-                  <div class="buttons">
-                    <button type="button" class="run-btn">▶ 実行する</button>
-                  </div>
-                </div>
-                <div class="status" role="status" aria-live="polite"></div>
-                <div class="output" hidden>
-                  <div class="output-head">
-                    実行結果 <span class="exit-code"></span>
-                  </div>
-                  <pre></pre>
-                </div>
-              </div>
-            </div>
-            <h3 class="task-title">課題3 <span>山形模様を表示する</span></h3>
-            <p>
-              空白と
-              <code>*</code>
-              を組み合わせて、次の山形模様を出力するCプログラムを作成してください。
-            </p>
-            <div class="expected">
-              <span>出力の形</span>
-              <pre>
-  *
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task2" aria-label="課題2のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<h3 class="task-title">課題3 <span>山形模様を表示する</span></h3>
+<p>空白と <code>*</code> を組み合わせて、次の山形模様を出力するCプログラムを作成してください。</p>
+<div class="expected"><span>出力の形</span><pre>  *
  ***
-*****</pre>
-            </div>
-            <div class="exercise" data-exercise="task3">
-              <div class="work">
-                <div class="editor-wrap">
-                  <div class="gutter" aria-hidden="true"></div>
-                  <textarea
-                    id="editor-task3"
-                    aria-label="課題3のコード"
-                    class="editor"
-                    spellcheck="false"
-                    autocapitalize="off"
-                    autocomplete="off"
-                    autocorrect="off"
-                    placeholder="// 自分で考えて入力"
-                  ></textarea>
-                </div>
-                <div class="work-footer">
-                  <div class="buttons">
-                    <button type="button" class="run-btn">▶ 実行する</button>
-                  </div>
-                </div>
-                <div class="status" role="status" aria-live="polite"></div>
-                <div class="output" hidden>
-                  <div class="output-head">
-                    実行結果 <span class="exit-code"></span>
-                  </div>
-                  <pre></pre>
-                </div>
-              </div>
-            </div>
-            <details class="hint">
-              <summary>ヒント</summary>
-              <ul>
-                <li>課題1：Hello Worldのサンプルコードを使います。</li>
-                <li>
-                  課題2：<code>int number</code> と
-                  <code>char name[]</code> を使います。
-                </li>
-                <li>課題3：<code>printf</code> を3回使っても構いません。</li>
-              </ul>
-            </details>
-          </section>
+*****
+</pre>
+</div>
+<div class="exercise" data-exercise="task3">
 
-          <section id="summary" class="section summary">
-            <h2>今日のまとめ</h2>
-            <ul>
-              <li>文字列の表示には <code>printf</code> を使う。</li>
-              <li>Cの変数は、値に合った型を宣言してから使う。</li>
-              <li>整数・小数・文字・文字列では、表示指定子が異なる。</li>
-            </ul>
-            <p>次回は演算子を使い分けて、計算の幅を広げます。</p>
-          </section>
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task3" aria-label="課題3のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>課題1：Hello Worldのサンプルコードを使います。</li>
+<li>課題2：<code>int number</code> と <code>char name[]</code> を使います。</li>
+<li>課題3：<code>printf</code> を3回使っても構いません。</li>
+</ul>
+</details>
+</section>
+<section id="summary" class="section summary"><h2>今日のまとめ</h2><ul>
+<li>文字列の表示には <code>printf</code> を使う。</li>
+<li>Cの変数は、値に合った型を宣言してから使う。</li>
+<li>整数・小数・文字・文字列では、表示指定子が異なる。</li>
+</ul>
+<p>次回は演算子を使い分けて、計算の幅を広げます。</p>
+</section>
           <section id="save" class="section submission">
             <h2>Moodle提出用ファイル保存</h2>
             <form id="export-form">

@@ -1,32 +1,11 @@
 import "./style.css";
 import { createSubmissionFile } from "./export.js";
 
-const samples = {
-  first: [
-    "#include <stdio.h>",
-    "",
-    "int main(void) {",
-    '    printf("Hello, World!\\n");',
-    "    return 0;",
-    "}",
-  ],
-  second: [
-    "#include <stdio.h>",
-    "",
-    "int main(void) {",
-    "    int number = 10;",
-    "    float pi = 3.14f;",
-    "    char letter = 'A';",
-    '    char word[] = "Hello";',
-    "",
-    '    printf("%d\\n", number);',
-    '    printf("%f\\n", pi);',
-    '    printf("%c\\n", letter);',
-    '    printf("%s\\n", word);',
-    "    return 0;",
-    "}",
-  ],
-};
+const sampleModules = import.meta.glob("./generated/*-samples.js", {
+  eager: true,
+});
+const lesson = document.body.dataset.lesson;
+const samples = sampleModules[`./generated/${lesson}-samples.js`]?.samples ?? {};
 
 function tokenColor(token) {
   if (token.startsWith("#")) return "#b693e8";
@@ -175,7 +154,10 @@ function setAllRunButtonsDisabled(disabled) {
 }
 
 for (const exercise of document.querySelectorAll(".exercise")) {
-  const key = "keisanki2026:" + exercise.dataset.exercise;
+  const key =
+    "keisanki2026:" +
+    (lesson === "lesson01" ? "" : `${lesson}:`) +
+    exercise.dataset.exercise;
   const editor = exercise.querySelector(".editor");
   const gutter = exercise.querySelector(".gutter");
   const status = exercise.querySelector(".status");
@@ -297,6 +279,7 @@ for (const exercise of document.querySelectorAll(".exercise")) {
         status.textContent = "エラーを確認して直してみましょう。";
         status.classList.add("error");
       } else if (
+        lesson === "lesson01" &&
         exercise.dataset.exercise === "task3" &&
         result.stdout.trimEnd() === "  *\n ***\n*****"
       ) {

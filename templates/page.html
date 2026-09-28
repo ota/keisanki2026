@@ -1,0 +1,85 @@
+<!-- Generated from content/lessonXX.md. Edit the Markdown source. -->
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f4ee" />
+    <title>{{PAGE_TITLE}} — 2I計算機基礎演習</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body data-lesson="{{SLUG}}" data-number="{{NUMBER}}">
+    <div class="shell">
+      <aside class="sidebar" aria-label="教材の目次">
+        <div class="brand">
+          <span class="brand-icon">&gt;_</span
+          ><span>計算機基礎演習<small> / 2026</small></span>
+        </div>
+        <div class="side-label">{{TERM}}</div>
+        <a class="current-lesson" href="#top" aria-current="page"
+          ><span>{{NUMBER}}</span>{{TITLE}}</a
+        >
+        <div class="side-label side-sections">今回の内容</div>
+        <nav class="side-nav" aria-label="今回の内容">{{NAV}}</nav>
+      </aside>
+      <main id="top" class="main">
+        <header class="topbar">
+          <span>2年 情報コース <span class="slash">/</span> {{SUBHEAD}}</span>
+        </header>
+        <article class="lesson">
+{{CONTENT}}
+          <section id="save" class="section submission">
+            <h2>Moodle提出用ファイル保存</h2>
+            <form id="export-form">
+              <div class="identity-fields">
+                <label for="attendance-number">
+                  出席番号
+                  <input
+                    id="attendance-number"
+                    name="attendance-number"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+                <label for="student-name">
+                  氏名
+                  <input
+                    id="student-name"
+                    name="student-name"
+                    type="text"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+              </div>
+              <ul class="export-note">
+                <li>出席番号と氏名を入力し、「保存」ボタンを押してください。</li>
+                <li>保存したファイルを、Moodleに提出してください。</li>
+              </ul>
+              <button type="submit" class="export-btn">
+                保存
+              </button>
+              <p
+                id="export-status"
+                class="export-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
+          </section>
+          <footer class="page-footer">
+            計算機基礎演習 <span>{{FOOTER}}</span>
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
