@@ -620,10 +620,75 @@ h1 {
 .hint li + li {
   margin-top: 5px;
 }
-.summary {
+.submission {
   border-bottom: 0;
   padding-bottom: 0;
   margin-bottom: 65px;
+}
+.submission form {
+  padding: 25px;
+  border: 1px solid #dce4da;
+  border-radius: 12px;
+  background: #fff;
+}
+.identity-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 18px;
+}
+.identity-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.identity-fields input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd8cd;
+  border-radius: 7px;
+  background: #fbfcfa;
+  color: #1f2925;
+  font-size: 16px;
+}
+.identity-fields input:focus {
+  outline: 2px solid #3b9771;
+  outline-offset: 2px;
+}
+.export-note {
+  margin: 18px 0;
+  color: #63746a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.export-btn {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: #27845e;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.export-btn:hover {
+  filter: brightness(0.96);
+}
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.export-status {
+  margin: 12px 0 0;
+  color: #397a5c;
+  font-size: 14px;
+}
+.export-status:empty {
+  display: none;
+}
+.export-status.error {
+  color: #b3483c;
 }
 .summary ul {
   list-style: none;
@@ -650,6 +715,48 @@ h1 {
   justify-content: space-between;
   font-size: 12px;
   color: #9aa69d;
+}
+.report-code {
+  flex: 1;
+  min-width: 0;
+  min-height: 230px;
+  margin: 0;
+  padding: 13px 15px;
+  overflow: auto;
+  color: #254637;
+  font-family: "DM Mono", monospace;
+  font-size: 15px;
+  line-height: 27px;
+  white-space: pre;
+}
+.report-meta {
+  margin-top: 35px;
+  padding-top: 30px;
+  border-top: 1px solid #dce4da;
+}
+.report-meta h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+}
+.report-meta dl {
+  margin: 0;
+}
+.report-meta dl > div {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e4e9e2;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.report-meta dt {
+  color: #647469;
+}
+.report-meta dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 @media (max-width: 900px) {
   .shell {
@@ -711,6 +818,16 @@ h1 {
   }
   .c-logo {
     width: 160px;
+  }
+  .identity-fields {
+    grid-template-columns: 1fr;
+  }
+  .submission form {
+    padding: 18px;
+  }
+  .report-meta dl > div {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
   .howto {
     margin-bottom: 62px;

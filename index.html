@@ -28,13 +28,12 @@
           <a href="#goals">今日のゴール</a><a href="#warmup">タイピング練習</a
           ><a href="#about-c">C言語とは</a><a href="#first-code">Hello World</a
           ><a href="#variables">変数の型</a><a href="#challenge">演習問題</a
-          ><a href="#summary">まとめ</a>
+          ><a href="#summary">まとめ</a><a href="#save">保存</a>
         </nav>
       </aside>
       <main id="top" class="main">
         <header class="topbar">
-          <span>2年 情報コース <span class="slash">/</span> 後期 第1回</span
-          >
+          <span>2年 情報コース <span class="slash">/</span> 後期 第1回</span>
         </header>
         <article class="lesson">
           <h1>C言語プログラミング<span class="title-tail">入門</span></h1>
@@ -426,6 +425,46 @@
               <li>整数・小数・文字・文字列では、表示指定子が異なる。</li>
             </ul>
             <p>次回は演算子を使い分けて、計算の幅を広げます。</p>
+          </section>
+          <section id="save" class="section submission">
+            <h2>保存</h2>
+            <form id="export-form">
+              <div class="identity-fields">
+                <label for="attendance-number">
+                  出席番号
+                  <input
+                    id="attendance-number"
+                    name="attendance-number"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+                <label for="student-name">
+                  氏名
+                  <input
+                    id="student-name"
+                    name="student-name"
+                    type="text"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+              </div>
+              <p class="export-note">
+                コード、出席番号、氏名、取得日時、ブラウザ情報をHTMLファイルに保存します。
+              </p>
+              <button type="submit" class="export-btn">
+                HTMLファイルを保存
+              </button>
+              <p
+                id="export-status"
+                class="export-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
           </section>
           <footer class="page-footer">
             計算機基礎演習 <span>後期 第1回 / C言語プログラミング入門</span>

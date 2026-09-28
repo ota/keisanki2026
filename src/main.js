@@ -1,4 +1,5 @@
 import "./style.css";
+import { createSubmissionFile } from "./export.js";
 
 const samples = {
   first: [
@@ -208,6 +209,7 @@ for (const exercise of document.querySelectorAll(".exercise")) {
   updateGutter();
   editor.addEventListener("input", () => {
     updateGutter();
+    output.hidden = true;
     try {
       localStorage.setItem(key, editor.value);
       saveNote.textContent = editor.value
@@ -266,10 +268,17 @@ for (const exercise of document.querySelectorAll(".exercise")) {
     output.hidden = true;
     status.classList.remove("error");
     status.textContent = "Cコンパイラを準備中…";
+    const codeAtRun = editor.value;
     try {
-      const result = await runC(editor.value, (message) => {
+      const result = await runC(codeAtRun, (message) => {
         status.textContent = message;
       });
+      if (editor.value !== codeAtRun) {
+        status.textContent =
+          "実行中にコードが変わりました。もう一度実行してください。";
+        status.classList.add("error");
+        return;
+      }
       const failed = result.exitCode === null || result.exitCode !== 0;
       const diagnostics = Array.isArray(result.errors)
         ? result.errors.join("\n")
@@ -304,3 +313,41 @@ for (const exercise of document.querySelectorAll(".exercise")) {
     }
   });
 }
+
+const exportForm = document.querySelector("#export-form");
+exportForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = exportForm.querySelector(".export-btn");
+  const status = document.querySelector("#export-status");
+  const attendanceNumber = document
+    .querySelector("#attendance-number")
+    .value.trim();
+  const studentName = document.querySelector("#student-name").value.trim();
+  if (!attendanceNumber || !studentName) return;
+
+  button.disabled = true;
+  status.classList.remove("error");
+  status.textContent = "HTMLファイルを作成中…";
+  try {
+    const { blob, filename } = await createSubmissionFile({
+      attendanceNumber,
+      studentName,
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    status.textContent = "HTMLファイルのダウンロードを開始しました。";
+  } catch (error) {
+    status.textContent =
+      "保存ファイルを作れませんでした。もう一度試してください。";
+    status.classList.add("error");
+    console.error(error);
+  } finally {
+    button.disabled = false;
+  }
+});
