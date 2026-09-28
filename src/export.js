@@ -88,7 +88,7 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
     code.className = "report-code";
     code.textContent = editor.value || "（未入力）";
     copy.querySelector(".editor").replaceWith(code);
-    copy.querySelector(".work label").removeAttribute("for");
+    copy.querySelector(".work label")?.removeAttribute("for");
     copy.querySelector(".work-footer")?.remove();
     copy.querySelector(".save-note")?.remove();
     copy.querySelector(".status")?.remove();
@@ -119,11 +119,6 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
     `${screen.width} × ${screen.height} ピクセル`,
   );
   addMetadataRow(list, "教材URL", location.origin + location.pathname);
-  addMetadataRow(
-    list,
-    "アカウント情報",
-    "取得していません（この教材にはログイン機能がありません）",
-  );
   metadata.append(heading, list);
   report.querySelector(".page-footer").after(metadata);
 
