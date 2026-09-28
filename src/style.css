@@ -218,6 +218,35 @@ h1 em {
   align-items: start;
   gap: 25px;
 }
+.c-points {
+  margin: 0;
+  padding-left: 1.35em;
+  color: #334e3e;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+.c-points > li + li {
+  margin-top: 16px;
+}
+.c-points > li::marker {
+  color: #348b65;
+}
+.c-points ul {
+  margin: 5px 0 0;
+  padding-left: 1.4em;
+  color: #5c6e61;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.8;
+  list-style-type: circle;
+}
+.c-points ul li + li {
+  margin-top: 5px;
+}
+.c-points ul li::marker {
+  color: #7eaa8e;
+}
 .c-logo {
   margin: 0;
   padding: 18px 14px 12px;
