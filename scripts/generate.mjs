@@ -2,6 +2,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import MarkdownIt from "markdown-it";
+import { EditorFields } from "./editor-fields.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const contentDir = join(root, "content");
@@ -59,10 +60,14 @@ function readFrontMatter(source, path) {
   ]) {
     if (!meta[key]) throw new Error(`${path}: ${key} がありません`);
   }
-  return { meta, body: source.slice(match[0].length) };
+  return {
+    meta,
+    body: source.slice(match[0].length),
+    bodyStart: match[0].length,
+  };
 }
 
-function splitSections(body, path) {
+function splitSections(body, path, offset = 0) {
   const heading = /^## (.+?) \{#([a-z][a-z0-9-]*)\}\s*$/gm;
   const matches = [...body.matchAll(heading)];
   if (!matches.length) throw new Error(`${path}: ## 見出し {#id} がありません`);
@@ -75,17 +80,18 @@ function splitSections(body, path) {
     if (ids.has(match[2]))
       throw new Error(`${path}: 見出しID ${match[2]} が重複しています`);
     ids.add(match[2]);
+    const rawStart = match.index + match[0].length;
+    const raw = body.slice(rawStart, matches[index + 1]?.index);
     return {
       title: match[1],
       id: match[2],
-      body: body
-        .slice(match.index + match[0].length, matches[index + 1]?.index)
-        .trim(),
+      body: raw.trim(),
+      bodyStart: offset + rawStart + raw.length - raw.trimStart().length,
     };
   });
 }
 
-function exerciseHtml(argument, body, samples, usedIds, path) {
+function exerciseHtml(argument, body, samples, usedIds, path, context) {
   const [id, filename] = argument.split(/\s+/);
   if (!/^[a-z][a-z0-9-]*$/.test(id || ""))
     throw new Error(`${path}: 演習IDが不正です: ${id}`);
@@ -93,6 +99,7 @@ function exerciseHtml(argument, body, samples, usedIds, path) {
     throw new Error(`${path}: 演習ID ${id} が重複しています`);
   usedIds.add(id);
   let sample = "";
+  let codeField;
   if (body.trim()) {
     const code = body.trim().match(/^```c\n([\s\S]*?)\n```$/);
     if (!code || !filename)
@@ -101,13 +108,19 @@ function exerciseHtml(argument, body, samples, usedIds, path) {
       );
     sample = code[1];
     samples[id] = sample.split("\n");
+    codeField = context.editor?.add(
+      "code",
+      sample,
+      context.start + body.length - body.trimStart().length + 5,
+      { exercise: id, filename },
+    );
   } else if (filename) {
     throw new Error(`${path}: ${id} の見本コードがありません`);
   }
   const safeId = escapeHtml(id);
   const label = sample ? "上記のサンプルコードを書き写してください：" : "";
   const sampleHtml = sample
-    ? `<div class="sample-head"><span class="file-icon">C</span> ${escapeHtml(filename)}<span class="sample-tag">見ながら入力</span></div>
+    ? `<div class="sample-head"><span class="file-icon">C</span> ${escapeHtml(filename)}${codeField ? `<button type="button" class="author-code-button" data-author-code="${codeField.key}">見本コードを編集</button>` : '<span class="sample-tag">見ながら入力</span>'}</div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>`
     : "";
   return `<div class="exercise" data-exercise="${safeId}">
@@ -124,41 +137,60 @@ function exerciseHtml(argument, body, samples, usedIds, path) {
   </div>`;
 }
 
-function directiveHtml(name, argument, body, samples, usedIds, path) {
-  const lines = body.trim().split("\n");
+function directiveHtml(name, argument, body, samples, usedIds, path, context) {
+  const trimmed = body.trim();
+  const lines = trimmed.split("\n");
+  let lineStart = context.start + body.length - body.trimStart().length;
+  const inline = (text, start) =>
+    context.editor
+      ? context.editor.inline(text, start)
+      : markdown.renderInline(text);
+  const rich = () =>
+    context.editor
+      ? context.editor.rich(body, context.start)
+      : markdown.render(body);
   if (name === "goals") {
     return `<div class="goal-grid">${lines
       .map((line, index) => {
         const match = line.match(/^- (.+?) \| (.+)$/);
         if (!match)
           throw new Error(`${path}: goal は「- 名前 | 説明」で書いてください`);
-        return `<div class="goal"><b>${String(index + 1).padStart(2, "0")}</b><strong>${markdown.renderInline(match[1])}</strong><span>${markdown.renderInline(match[2])}</span></div>`;
+        const title = inline(match[1], lineStart + 2);
+        const description = inline(
+          match[2],
+          lineStart + 2 + match[1].length + 3,
+        );
+        lineStart += line.length + 1;
+        return `<div class="goal"><b>${String(index + 1).padStart(2, "0")}</b><strong>${title}</strong><span>${description}</span></div>`;
       })
       .join("")}</div>`;
   }
   if (name === "howto") {
-    return `<section class="howto" aria-labelledby="howto-title"><div class="howto-icon">⌨</div><div><h3 id="howto-title">${escapeHtml(argument)}</h3>${markdown.render(body)}</div></section>`;
+    return `<section class="howto" aria-labelledby="howto-title"><div class="howto-icon">⌨</div><div><h3 id="howto-title">${escapeHtml(argument)}</h3>${rich()}</div></section>`;
   }
   if (name === "about-c") {
     const [src, caption] = argument.split("|").map((part) => part.trim());
     if (!src || !caption)
       throw new Error(`${path}: about-c には画像と説明が必要です`);
-    const list = markdown.render(body).replace("<ul>", '<ul class="c-points">');
+    const list = rich().replace("<ul>", '<ul class="c-points">');
     return `<div class="about-c-layout">${list}<figure class="c-logo"><img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" width="250" height="262" /><figcaption>${escapeHtml(caption)}</figcaption></figure></div>`;
   }
   if (name === "concepts") {
-    return lines
-      .map((line, index) => {
+    const items = lines
+      .map((line) => {
         if (!line.startsWith("- "))
           throw new Error(`${path}: concepts は箇条書きで書いてください`);
-        return `<div class="concept"><b>${String.fromCharCode(65 + index)}</b><p>${markdown.renderInline(line.slice(2))}</p></div>`;
+        const content = inline(line.slice(2), lineStart + 2);
+        lineStart += line.length + 1;
+        return `<li class="concept"><p>${content}</p></li>`;
       })
       .join("\n");
+    return `<ul class="concepts">${items}</ul>`;
   }
   if (name === "exercise")
-    return exerciseHtml(argument, body, samples, usedIds, path);
-  if (name === "check")
-    return `<div class="check"><b>確認</b>${markdown.render(body)}</div>`;
+    return exerciseHtml(argument, body, samples, usedIds, path, context);
+  if (name === "check") return `<div class="check"><b>確認</b>${rich()}</div>`;
+  if (name === "notice") return `<div class="lesson-notice">${rich()}</div>`;
   if (name === "expected") {
     const value = body.trim().startsWith("```")
       ? markdown
@@ -166,45 +198,81 @@ function directiveHtml(name, argument, body, samples, usedIds, path) {
           .replace(/<pre><code>/, "<pre>")
           .replace(/<\/code><\/pre>/, "</pre>")
       : `<code>${markdown.renderInline(body.trim())}</code>`;
-    return `<div class="expected"><span>出力の形</span>${value}</div>`;
+    return `<div class="expected">${value}</div>`;
   }
   if (name === "hint")
-    return `<details class="hint"><summary>ヒント</summary>${markdown.render(body)}</details>`;
+    return `<details class="hint"><summary>ヒント</summary>${rich()}</details>`;
   throw new Error(`${path}: 未対応の記法 :::${name}`);
 }
 
-function renderBody(body, samples, usedIds, path) {
+function renderBody(body, samples, usedIds, path, context) {
   const blocks = [];
+  // The student rendering keeps its existing output; the editor renders each
+  // source fragment separately so that editable ranges have exact offsets.
+  let authorHtml = "";
+  let cursor = 0;
   const withPlaceholders = body.replace(
     /^:::(\w[\w-]*)([^\n]*)\n([\s\S]*?)^:::\s*$/gm,
-    (_, name, argument, content) => {
+    (full, name, argument, content, offset) => {
       const token = `LESSONBLOCK${blocks.length}END`;
-      blocks.push([
-        token,
-        directiveHtml(name, argument.trim(), content, samples, usedIds, path),
-      ]);
+      const html = directiveHtml(
+        name,
+        argument.trim(),
+        content,
+        samples,
+        usedIds,
+        path,
+        {
+          editor: context.editor,
+          start: context.start + offset + 3 + name.length + argument.length + 1,
+        },
+      );
+      blocks.push([token, html]);
+      if (context.editor) {
+        authorHtml +=
+          context.editor.rich(
+            body.slice(cursor, offset),
+            context.start + cursor,
+          ) + html;
+        cursor = offset + full.length;
+      }
       return `\n\n${token}\n\n`;
     },
   );
   if (/^:::/m.test(withPlaceholders))
     throw new Error(`${path}: 閉じていない ::: ブロックがあります`);
+  if (context.editor)
+    return (
+      authorHtml +
+      context.editor.rich(body.slice(cursor), context.start + cursor)
+    );
   let html = markdown.render(withPlaceholders);
   for (const [token, value] of blocks)
     html = html.replace(`<p>${token}</p>`, value);
   return html;
 }
 
-function renderSection(section, samples, usedIds, path) {
+function renderSection(section, samples, usedIds, path, editor) {
   let body = section.body;
   let after = "";
   if (section.id === "goals") {
     const howto = body.match(/\n:::howto[^\n]*\n[\s\S]*?\n:::\s*$/);
     if (howto) {
-      after = renderBody(howto[0].trim(), samples, usedIds, path);
+      after = renderBody(howto[0].trim(), samples, usedIds, path, {
+        editor,
+        start:
+          section.bodyStart +
+          howto.index +
+          howto[0].length -
+          howto[0].trimStart().length,
+      });
       body = body.slice(0, howto.index).trim();
     }
   }
-  let html = renderBody(body, samples, usedIds, path);
+  let html = renderBody(body, samples, usedIds, path, {
+    editor,
+    start: section.bodyStart,
+  });
   if (section.id === "warmup")
     html = html.replace("<ul>", '<ul class="fact-list">');
   if (section.id === "challenge") {
@@ -222,6 +290,54 @@ function renderSection(section, samples, usedIds, path) {
   return `<section id="${section.id}" class="${className}"><h2>${escapeHtml(section.title)}</h2>${html}</section>${after}`;
 }
 
+export function renderLesson(
+  source,
+  template,
+  path,
+  { editable = false } = {},
+) {
+  source = source.replace(/\r\n?/g, "\n");
+  const slug = path.replace(/\.md$/, "");
+  const { meta, body, bodyStart } = readFrontMatter(source, path);
+  const sections = splitSections(body, path, bodyStart);
+  const samples = {};
+  const usedIds = new Set();
+  const editor = editable ? new EditorFields(markdown, source) : undefined;
+  const content = `<h1>${escapeHtml(meta.title)}</h1>\n${sections.map((section) => renderSection(section, samples, usedIds, path, editor)).join("\n")}`;
+  const nav =
+    sections
+      .map(({ id, title }) => `<a href="#${id}">${escapeHtml(title)}</a>`)
+      .join("") + '<a href="#save">保存</a>';
+  const replacements = {
+    PAGE_TITLE: meta.pageTitle,
+    TERM: meta.term,
+    NUMBER: meta.number,
+    TITLE: meta.title,
+    SUBHEAD: meta.subhead,
+    FOOTER: meta.footer,
+    SLUG: slug,
+    NAV: nav,
+    CONTENT: content,
+  };
+  let html = template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) =>
+    key === "NAV" || key === "CONTENT"
+      ? replacements[key]
+      : escapeHtml(replacements[key] ?? ""),
+  );
+  html = html.replace(/[\t ]+$/gm, "");
+  if (html.includes("{{"))
+    throw new Error(`${path}: 未処理のテンプレート変数があります`);
+  return {
+    html,
+    samples,
+    fields: editor?.fields ?? [],
+    source,
+    meta,
+    sectionIds: sections.map(({ id }) => id),
+    exerciseIds: [...usedIds],
+  };
+}
+
 export async function generateAll() {
   const template = await readFile(templatePath, "utf8");
   const paths = (await readdir(contentDir))
@@ -230,40 +346,20 @@ export async function generateAll() {
   if (!paths.includes("lesson01.md"))
     throw new Error("content/lesson01.md がありません");
   await mkdir(generatedDir, { recursive: true });
-  const outputs = [];
-  for (const path of paths) {
-    const slug = path.slice(0, -3);
-    const { meta, body } = readFrontMatter(
-      await readFile(join(contentDir, path), "utf8"),
+  // Validate every lesson before writing any generated files.
+  const rendered = await Promise.all(
+    paths.map(async (path) => ({
       path,
-    );
-    const sections = splitSections(body, path);
-    const samples = {};
-    const usedIds = new Set();
-    const content = `<h1>${escapeHtml(meta.title)}</h1>\n${sections.map((section) => renderSection(section, samples, usedIds, path)).join("\n")}`;
-    const nav =
-      sections
-        .map(({ id, title }) => `<a href="#${id}">${escapeHtml(title)}</a>`)
-        .join("") + '<a href="#save">保存</a>';
-    const replacements = {
-      PAGE_TITLE: meta.pageTitle,
-      TERM: meta.term,
-      NUMBER: meta.number,
-      TITLE: meta.title,
-      SUBHEAD: meta.subhead,
-      FOOTER: meta.footer,
-      SLUG: slug,
-      NAV: nav,
-      CONTENT: content,
-    };
-    let html = template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) =>
-      key === "NAV" || key === "CONTENT"
-        ? replacements[key]
-        : escapeHtml(replacements[key] ?? ""),
-    );
-    html = html.replace(/[\t ]+$/gm, "");
-    if (html.includes("{{"))
-      throw new Error(`${path}: 未処理のテンプレート変数があります`);
+      ...renderLesson(
+        await readFile(join(contentDir, path), "utf8"),
+        template,
+        path,
+      ),
+    })),
+  );
+  const outputs = [];
+  for (const { path, html, samples } of rendered) {
+    const slug = path.slice(0, -3);
     const output = join(
       root,
       slug === "lesson01" ? "index.html" : `${slug}.html`,

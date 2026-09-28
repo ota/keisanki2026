@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>教材編集 — 計算機基礎演習</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="author-mode">
+    <header class="author-toolbar">
+      <div class="author-toolbar-main">
+        <strong>教材編集</strong>
+        <span id="author-status" role="status" aria-live="polite"
+          >読み込み中…</span
+        >
+        <a id="student-preview" target="_blank" rel="noopener">学生表示</a>
+        <button id="author-save" type="button" class="author-primary" disabled>
+          原稿を保存
+        </button>
+      </div>
+      <div class="author-format" role="toolbar" aria-label="文章の編集">
+        <button type="button" data-command="bold" disabled>太字</button>
+        <button type="button" data-command="code" disabled>コード</button>
+        <button type="button" data-command="list" disabled>箇条書き</button>
+        <button type="button" data-command="indent" disabled>字下げ</button>
+        <button type="button" data-command="outdent" disabled>字上げ</button>
+        <button type="button" data-command="undo" disabled>元に戻す</button>
+        <button type="button" data-command="redo" disabled>やり直す</button>
+        <span class="author-help">文章をクリックして編集できます。</span>
+      </div>
+    </header>
+    <div id="author-notice" class="author-notice" hidden>
+      <p id="author-message" role="alert"></p>
+      <button type="button" id="author-download">編集中の原稿を書き出す</button>
+      <button type="button" id="author-reload">最新の原稿を読み込む</button>
+    </div>
+    <div id="author-page"></div>
+    <dialog id="author-code-dialog" aria-labelledby="author-code-title">
+      <div class="author-dialog-head">
+        <h2 id="author-code-title">見本コード</h2>
+        <button id="author-code-close" type="button">編集を終える</button>
+      </div>
+      <textarea
+        id="author-code-input"
+        aria-label="見本コード"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        autocorrect="off"
+      ></textarea>
+      <p>変更は「原稿を保存」でMarkdownに保存されます。</p>
+    </dialog>
+    <script type="module" src="/author/main.js"></script>
+  </body>
+</html>

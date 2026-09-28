@@ -25,7 +25,7 @@
           ><span>01</span>第1回　C言語プログラミング入門</a
         >
         <div class="side-label side-sections">今回の内容</div>
-        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#warmup">タイピング練習</a><a href="#about-c">C言語とは</a><a href="#first-code">Hello World</a><a href="#variables">変数の型</a><a href="#challenge">演習問題</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
+        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#warmup">タイピング練習</a><a href="#about-c">C言語とは</a><a href="#first-code">Hello World</a><a href="#variable">変数</a><a href="#variables">変数の型</a><a href="#printf-two-values">printf の応用</a><a href="#challenge">演習問題</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
       </aside>
       <main id="top" class="main">
         <header class="topbar">
@@ -33,7 +33,7 @@
         </header>
         <article class="lesson">
 <h1>第1回　C言語プログラミング入門</h1>
-<section id="goals" class="section"><h2>今回の目標</h2><div class="goal-grid"><div class="goal"><b>01</b><strong>Cコードを動かす</strong><span>自分で入力して実行する。</span></div><div class="goal"><b>02</b><strong>変数を作る</strong><span>データに合う型を選ぶ。</span></div><div class="goal"><b>03</b><strong>結果を表示する</strong><span><code>printf</code> の指定子を使う。</span></div></div>
+<section id="goals" class="section"><h2>今回の目標</h2><div class="goal-grid"><div class="goal"><b>01</b><strong>Cコードを動かす</strong><span>自分で入力して実行する。</span></div><div class="goal"><b>02</b><strong>変数を作る</strong><span>データに合う型を選ぶ。</span></div><div class="goal"><b>03</b><strong>結果を表示する</strong><span><code>printf</code> で変数の値を表示する。</span></div></div>
 </section><section class="howto" aria-labelledby="howto-title"><div class="howto-icon">⌨</div><div><h3 id="howto-title">演習の進め方</h3><ul>
 <li>サンプルコードを見て、すぐ下の入力欄に自分で打ち込みます。</li>
 <li>「実行する」を押して、結果を確認します。</li>
@@ -74,11 +74,13 @@
 <figure class="c-logo"><img src="/images/c-language-logo.png" alt="C言語のロゴ" width="250" height="262" /><figcaption>C言語のロゴ</figcaption></figure></div>
 </section>
 <section id="first-code" class="section"><h2>Hello World</h2><p>サンプルコードを書き写して、「Hello, World!」と表示してみましょう。</p>
-<div class="concept"><b>A</b><p><code>#include &lt;stdio.h&gt;</code> は画面への出力に使う準備です。</p></div>
-<div class="concept"><b>B</b><p><code>int main(void) { ... }</code> の中に、実行する処理を書きます。</p></div>
-<div class="concept"><b>C</b><p><code>printf</code> で文字を表示し、<code>\n</code> で改行します。</p></div>
-<div class="concept"><b>D</b><p><code>return 0;</code> は正常終了を表します。</p></div>
-<div class="concept"><b>E</b><p><code>//</code> から行末まではコメントです。</p></div>
+<p>（※Pythonと比べて、タイプ量が多いです。）</p>
+<ul class="concepts"><li class="concept"><p><code>#include &lt;stdio.h&gt;</code> は画面への出力に使う準備です。</p></li>
+<li class="concept"><p><code>int main(void) { ... }</code> の中に、実行する処理を書きます。</p></li>
+<li class="concept"><p><code>printf</code> で文字を表示します。</p></li>
+<li class="concept"><p><code>\n</code> は改行を表します。</p></li>
+<li class="concept"><p><code>return 0;</code> は正常終了を表します。</p></li>
+<li class="concept"><p><code>//</code> から行末まではコメントです。</p></li></ul>
 <p>入力時は <code>stdio.h</code> のつづり、括弧、<code>;</code> を確認しましょう。</p>
 <div class="exercise" data-exercise="first">
     <div class="sample-head"><span class="file-icon">C</span> hello.c<span class="sample-tag">見ながら入力</span></div>
@@ -93,16 +95,46 @@
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
-<div class="check"><b>確認</b><p>表示する言葉を変えて、もう一度実行してみましょう。</p>
+<div class="check"><b>確認</b><p>Hello, World! 以外の文字列を表示してみましょう。</p>
 </div>
 </section>
-<section id="variables" class="section"><h2>変数の型</h2><p>Cでは、変数を使う前にデータの型を宣言します。</p>
+<section id="variable" class="section"><h2>変数</h2><p>Cでは、変数を使う前にデータの型を宣言します。</p>
+<p>printf で変数を用いるには、%ではじまる「書式指定子」を書きます。</p>
+<div class="exercise" data-exercise="second">
+    <div class="sample-head"><span class="file-icon">C</span> variable.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-second">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-second" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>書式指定子の前後に、好きな内容を書くことができます。</p>
+<div class="exercise" data-exercise="third">
+    <div class="sample-head"><span class="file-icon">C</span> variable.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-third">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-third" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+</section>
+<section id="variables" class="section"><h2>変数の型</h2><p>書式指定子は、データの型に合わせて使い分けます。</p>
 <table>
 <thead>
 <tr>
 <th>型</th>
 <th>値の例</th>
-<th>表示の目印</th>
+<th>書式指定子</th>
 </tr>
 </thead>
 <tbody>
@@ -129,23 +161,47 @@
 </tbody>
 </table>
 <p>1文字は <code>'A'</code>、文字列は <code>&quot;Hello&quot;</code> のように囲みます。</p>
-<div class="exercise" data-exercise="second">
+<div class="exercise" data-exercise="fourth">
     <div class="sample-head"><span class="file-icon">C</span> variables.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
-      <label for="editor-second">上記のサンプルコードを書き写してください：</label>
+      <label for="editor-fourth">上記のサンプルコードを書き写してください：</label>
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-second" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+        <textarea id="editor-fourth" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
       <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
-<div class="check"><b>確認</b><p><code>number</code> と <code>letter</code> を変えると、どの出力が変わりますか。</p>
+<div class="check"><b>確認</b><p><code>letter</code> と <code>word</code> を変えると出力がどう変わるか、確認してみましょう。</p>
 </div>
 </section>
-<section id="challenge" class="section challenge-section"><h2>演習問題</h2><p>※AIの使用を禁止します。自分で考えて解答しましょう。</p>
+<section id="printf-two-values" class="section"><h2>printf の応用</h2><ul>
+<li>変数をカンマ <code>,</code> で区切ると、1つの <code>printf</code> で複数の値を表示できます。
+<ul>
+<li>書式指定子と変数の順番を合わせます。</li>
+<li>この例では、<code>%d</code> に <code>number</code>、<code>%c</code> に <code>letter</code> が対応します。</li>
+</ul>
+</li>
+</ul>
+<div class="exercise" data-exercise="printf-two-values">
+    <div class="sample-head"><span class="file-icon">C</span> printf_two.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-printf-two-values">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-printf-two-values" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><code>10 A</code></div>
+</section>
+<section id="challenge" class="section challenge-section"><h2>演習問題</h2><div class="lesson-notice"><p><strong>※AIの使用を禁止します。自分で考えて解答しましょう。</strong></p>
+</div>
 <h3 class="task-title">課題1 <span>好きな文字列を表示する</span></h3>
 <p>「Hello World」以外の好きな文字列を出力するCプログラムを作成してください。</p>
 <div class="exercise" data-exercise="task1">
@@ -161,8 +217,8 @@
     </div>
   </div>
 <h3 class="task-title">課題2 <span>出席番号と氏名を表示する</span></h3>
-<p>整数の変数 <code>number</code> と文字列の変数 <code>name</code> を使い、あなたの出席番号と氏名を表示してください。</p>
-<div class="expected"><span>出力の形</span><code>出席番号 99 番の 太田健吾 です。</code></div>
+<p>整数の変数 <code>number</code> と文字列の変数 <code>name</code> を使い、あなたの出席番号と氏名を次のように表示してください。</p>
+<div class="expected"><code>出席番号 99 番の 太田健吾 です。</code></div>
 <div class="exercise" data-exercise="task2">
 
     <div class="work">
@@ -176,8 +232,8 @@
     </div>
   </div>
 <h3 class="task-title">課題3 <span>山形模様を表示する</span></h3>
-<p>空白と <code>*</code> を組み合わせて、次の山形模様を出力するCプログラムを作成してください。</p>
-<div class="expected"><span>出力の形</span><pre>  *
+<p>空白と <code>*</code> を組み合わせて、次のような山形模様を出力するCプログラムを作成してください。</p>
+<div class="expected"><pre>  *
  ***
 *****
 </pre>
@@ -204,7 +260,7 @@
 <section id="summary" class="section summary"><h2>今日のまとめ</h2><ul>
 <li>文字列の表示には <code>printf</code> を使う。</li>
 <li>Cの変数は、値に合った型を宣言してから使う。</li>
-<li>整数・小数・文字・文字列では、表示指定子が異なる。</li>
+<li>整数・小数・文字・文字列では、書式指定子が異なる。</li>
 </ul>
 <p>次回は演算子を使い分けて、計算の幅を広げます。</p>
 </section>

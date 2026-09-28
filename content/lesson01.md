@@ -12,7 +12,7 @@ footer: 後期 第1回 / C言語プログラミング入門
 :::goals
 - Cコードを動かす | 自分で入力して実行する。
 - 変数を作る | データに合う型を選ぶ。
-- 結果を表示する | `printf` の指定子を使う。
+- 結果を表示する | `printf` で変数の値を表示する。
 :::
 
 :::howto 演習の進め方
@@ -46,10 +46,13 @@ footer: 後期 第1回 / C言語プログラミング入門
 
 サンプルコードを書き写して、「Hello, World!」と表示してみましょう。
 
+（※Pythonと比べて、タイプ量が多いです。）
+
 :::concepts
 - `#include <stdio.h>` は画面への出力に使う準備です。
 - `int main(void) { ... }` の中に、実行する処理を書きます。
-- `printf` で文字を表示し、`\n` で改行します。
+- `printf` で文字を表示します。
+- `\n` は改行を表します。
 - `return 0;` は正常終了を表します。
 - `//` から行末まではコメントです。
 :::
@@ -64,18 +67,54 @@ int main(void) {
     printf("Hello, World!\n");
     return 0;
 }
+
+// これはコメントです。
 ```
 :::
 
 :::check
-表示する言葉を変えて、もう一度実行してみましょう。
+Hello, World! 以外の文字列を表示してみましょう。
+:::
+
+## 変数 {#variable}
+
+Cでは、変数を使う前にデータの型を宣言します。
+
+printf で変数を用いるには、%ではじまる「書式指定子」を書きます。
+
+:::exercise second variable.c
+```c
+#include <stdio.h>
+
+int main(void) {
+    int number = 10;
+
+    printf("%d\n", number);
+    return 0;
+}
+```
+:::
+
+書式指定子の前後に、好きな内容を書くことができます。
+
+:::exercise third variable.c
+```c
+#include <stdio.h>
+
+int main(void) {
+    float pi = 3.14;
+
+    printf("円周率は %f です。\n", pi);
+    return 0;
+}
+```
 :::
 
 ## 変数の型 {#variables}
 
-Cでは、変数を使う前にデータの型を宣言します。
+書式指定子は、データの型に合わせて使い分けます。
 
-| 型 | 値の例 | 表示の目印 |
+| 型 | 値の例 | 書式指定子 |
 | --- | --- | --- |
 | `int` | 10（整数） | `%d` |
 | `float` | 3.14（小数） | `%f` |
@@ -84,18 +123,14 @@ Cでは、変数を使う前にデータの型を宣言します。
 
 1文字は `'A'`、文字列は `"Hello"` のように囲みます。
 
-:::exercise second variables.c
+:::exercise fourth variables.c
 ```c
 #include <stdio.h>
 
 int main(void) {
-    int number = 10;
-    float pi = 3.14f;
     char letter = 'A';
     char word[] = "Hello";
 
-    printf("%d\n", number);
-    printf("%f\n", pi);
     printf("%c\n", letter);
     printf("%s\n", word);
     return 0;
@@ -104,12 +139,38 @@ int main(void) {
 :::
 
 :::check
-`number` と `letter` を変えると、どの出力が変わりますか。
+`letter` と `word` を変えると出力がどう変わるか、確認してみましょう。
+:::
+
+## printf の応用 {#printf-two-values}
+
+- 変数をカンマ `,` で区切ると、1つの `printf` で複数の値を表示できます。
+  - 書式指定子と変数の順番を合わせます。
+  - この例では、`%d` に `number`、`%c` に `letter` が対応します。
+
+:::exercise printf-two-values printf_two.c
+```c
+#include <stdio.h>
+
+int main(void) {
+    int number = 10;
+    char letter = 'A';
+
+    printf("%d %c\n", number, letter);
+    return 0;
+}
+```
+:::
+
+:::expected
+10 A
 :::
 
 ## 演習問題 {#challenge}
 
-※AIの使用を禁止します。自分で考えて解答しましょう。
+:::notice
+**※AIの使用を禁止します。自分で考えて解答しましょう。**
+:::
 
 ### 課題1　好きな文字列を表示する
 
@@ -120,7 +181,7 @@ int main(void) {
 
 ### 課題2　出席番号と氏名を表示する
 
-整数の変数 `number` と文字列の変数 `name` を使い、あなたの出席番号と氏名を表示してください。
+整数の変数 `number` と文字列の変数 `name` を使い、あなたの出席番号と氏名を次のように表示してください。
 
 :::expected
 出席番号 99 番の 太田健吾 です。
@@ -131,7 +192,7 @@ int main(void) {
 
 ### 課題3　山形模様を表示する
 
-空白と `*` を組み合わせて、次の山形模様を出力するCプログラムを作成してください。
+空白と `*` を組み合わせて、次のような山形模様を出力するCプログラムを作成してください。
 
 :::expected
 ```
@@ -154,6 +215,6 @@ int main(void) {
 
 - 文字列の表示には `printf` を使う。
 - Cの変数は、値に合った型を宣言してから使う。
-- 整数・小数・文字・文字列では、表示指定子が異なる。
+- 整数・小数・文字・文字列では、書式指定子が異なる。
 
 次回は演算子を使い分けて、計算の幅を広げます。
