@@ -154,22 +154,14 @@ code {
 }
 h1 {
   font-family: "Noto Sans JP", sans-serif;
-  letter-spacing: -0.05em;
-  line-height: 1.22;
-  font-size: clamp(39px, 5vw, 65px);
-  margin: 0 0 22px;
+  letter-spacing: -0.04em;
+  line-height: 1.4;
+  font-size: clamp(32px, 4vw, 48px);
+  margin: 0 0 62px;
   font-weight: 800;
 }
-h1 em {
-  font-style: normal;
-  color: #27825f;
-}
-.lead {
-  font-size: 18px;
-  line-height: 2;
-  color: #66776b;
-  max-width: 680px;
-  margin: 0 0 86px;
+.title-tail {
+  white-space: nowrap;
 }
 .section {
   scroll-margin-top: 28px;
@@ -686,23 +678,17 @@ h1 em {
   .lesson {
     padding: 48px 26px;
   }
-  .lead {
-    margin-bottom: 65px;
-  }
 }
 @media (max-width: 600px) {
   .topbar {
     height: 52px;
     font-size: 12px;
   }
-  .topbar span:last-child {
-    display: none;
-  }
   .lesson {
     padding: 38px 18px;
   }
-  .lead {
-    font-size: 16px;
+  h1 {
+    margin-bottom: 44px;
   }
   .goal-grid {
     grid-template-columns: 1fr;
