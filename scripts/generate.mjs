@@ -176,16 +176,21 @@ function directiveHtml(name, argument, body, samples, usedIds, path, context) {
     return `<div class="about-c-layout">${list}<figure class="c-logo"><img src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" width="250" height="262" /><figcaption>${escapeHtml(caption)}</figcaption></figure></div>`;
   }
   if (name === "concepts") {
-    const items = lines
-      .map((line) => {
-        if (!line.startsWith("- "))
-          throw new Error(`${path}: concepts は箇条書きで書いてください`);
-        const content = inline(line.slice(2), lineStart + 2);
-        lineStart += line.length + 1;
-        return `<li class="concept"><p>${content}</p></li>`;
-      })
-      .join("\n");
-    return `<ul class="concepts">${items}</ul>`;
+    const items = [];
+    for (const line of lines) {
+      if (line.startsWith("- ")) {
+        items.push({
+          content: inline(line.slice(2), lineStart + 2),
+          details: [],
+        });
+      } else if (line.startsWith("  - ") && items.length) {
+        items.at(-1).details.push(inline(line.slice(4), lineStart + 4));
+      } else {
+        throw new Error(`${path}: concepts は箇条書きで書いてください`);
+      }
+      lineStart += line.length + 1;
+    }
+    return `<ul class="concepts">${items.map(({ content, details }) => `<li class="concept"><p>${content}</p>${details.length ? `<ul class="concept-details">${details.map((detail) => `<li>${detail}</li>`).join("")}</ul>` : ""}</li>`).join("\n")}</ul>`;
   }
   if (name === "exercise")
     return exerciseHtml(argument, body, samples, usedIds, path, context);
@@ -360,11 +365,13 @@ export async function generateAll() {
   const outputs = [];
   for (const { path, html, samples } of rendered) {
     const slug = path.slice(0, -3);
-    const output = join(
-      root,
-      slug === "lesson01" ? "index.html" : `${slug}.html`,
-    );
+    const output = join(root, `${slug}.html`);
     await writeFile(output, html);
+    if (slug === "lesson01") {
+      const entry = join(root, "index.html");
+      await writeFile(entry, html);
+      outputs.push(entry);
+    }
     await writeFile(
       join(generatedDir, `${slug}-samples.js`),
       `// Generated from content/${path}\nexport const samples = ${JSON.stringify(samples, null, 2)};\n`,

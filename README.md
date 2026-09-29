@@ -48,16 +48,18 @@ npm run edit
 
 ## Markdownで講義を編集する
 
-第1回の本文は [`content/lesson01.md`](content/lesson01.md) にあります。`index.html` と `src/generated/lesson01-samples.js` は生成物なので直接編集せず、Markdownを変更してください。`npm run dev` では保存時に自動生成され、`npm run build` でもビルド前に生成されます。手動で生成する場合は `npm run generate` を実行します。
+第1回の本文は [`content/lesson01.md`](content/lesson01.md) にあります。`index.html`、`lesson01.html`、`src/generated/lesson01-samples.js` は生成物なので直接編集せず、Markdownを変更してください。`npm run dev` では保存時に自動生成され、`npm run build` でもビルド前に生成されます。手動で生成する場合は `npm run generate` を実行します。
 
 - `## 見出し {#id}` が本文の区切りと左側の目次になります。段落、箇条書き、リンク、表、インラインコードは通常のMarkdownで書けます。
 - `:::exercise first hello.c` の中に `c` のコードフェンスを書くと、コピーできない見本画像、入力欄、実行ボタンを生成します。コードフェンスなしの `:::exercise task1` は自分で考える演習用です。IDはページ内で重複させないでください。
 - `:::goals`、`:::howto`、`:::about-c`、`:::concepts`、`:::check`、`:::notice`、`:::expected`、`:::hint` は第1回で使っている表示用ブロックです。`:::notice` は注意書きを赤色で表示します。書き方は第1回のMarkdownを参照してください。
-- 新しい回は `content/lesson02.md` のように追加します。第1回は `index.html`、以降は `lesson02.html` のように生成されます。新しいファイルを追加したときは開発サーバを再起動してください。
+- 新しい回は `content/lesson02.md` のように追加します。各回は `lesson01.html`、`lesson02.html` のように生成され、第1回は従来の入口である `index.html` にも同じ内容を生成します。新しいファイルを追加したときは開発サーバを再起動してください。
 
 ページの共通部分は `templates/page.html`、見た目は `src/style.css`、実行と保存は `src/main.js` と `src/export.js` にあります。これらの変更は全回に反映されます。
 
 ## GitHub Pages
+
+第1回の固定URLは `https://ota.github.io/keisanki2026/lesson01.html` です。MoodleからはこのURLへリンクできます。
 
 `main` ブランチへの push で GitHub Actions がビルドし、`https://ota.github.io/keisanki2026/` に公開します。リポジトリの Settings → Pages で Build and deployment の Source を **GitHub Actions** に設定してください。公開先のサブパスに合わせたビルドは `.github/workflows/deploy.yml` で指定しています。
 

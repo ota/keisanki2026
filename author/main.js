@@ -264,8 +264,7 @@ function displayModel(nextModel, nextChanges = new Map()) {
       ),
     );
   }
-  document.querySelector("#student-preview").href =
-    slug === "lesson01" ? "/" : `/${slug}.html`;
+  document.querySelector("#student-preview").href = `/${slug}.html`;
   document.querySelector("#student-preview").title =
     "原稿を保存した後の学生用ページを開きます";
   drawSamples();

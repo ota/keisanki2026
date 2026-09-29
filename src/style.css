@@ -332,6 +332,16 @@ h1 {
   margin: 0;
   color: #54665a;
 }
+.concept-details {
+  margin: 2px 0 0;
+  padding-left: 1.4em;
+  color: #54665a;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.concept-details li::marker {
+  color: #358063;
+}
 .section > p.syntax-tip {
   margin: 18px 0 0;
   font-size: 14px;
