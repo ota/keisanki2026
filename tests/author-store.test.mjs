@@ -248,13 +248,17 @@ test("local editing API checks host, origin and save token", async (t) => {
   assert.ok(saved.data.source.includes("日本語の保存確認"));
 });
 
+// Git may check the lesson out with CRLF line endings (core.autocrlf), so
+// the tests below build their sources from an LF copy.
+const lfOriginal = original.replace(/\r\n?/g, "\n");
+
 test("fix exercises put editable code with errors into the input, not the sample canvas", async (t) => {
   const broken = '#include <stdio.h>\n\nint main(void) {\n    printf("<a>")\n    return 0;\n}';
-  const at = original.lastIndexOf("\n## ");
+  const at = lfOriginal.lastIndexOf("\n## ");
   const source =
-    original.slice(0, at) +
+    lfOriginal.slice(0, at) +
     `\n:::exercise fix-one hello.c fix\n\`\`\`c\n${broken}\n\`\`\`\n:::\n` +
-    original.slice(at);
+    lfOriginal.slice(at);
   const page = renderLesson(source, template, "lesson01.md");
   assert.equal(page.samples["fix-one"], undefined);
   assert.ok(page.exerciseIds.includes("fix-one"));
@@ -280,11 +284,11 @@ test("fix exercises put editable code with errors into the input, not the sample
 });
 
 test("each sentence shows on its own line, and check paragraphs stack", () => {
-  const at = original.lastIndexOf("\n## ");
+  const at = lfOriginal.lastIndexOf("\n## ");
   const source =
-    original.slice(0, at) +
+    lfOriginal.slice(0, at) +
     "\n文の一つ目です。二つ目は「引用。」を含みます。`a。b` の後の文です。\n最後の文です。\n\n:::check\n一つ目の段落です。\n\n二つ目の段落です。\n:::\n" +
-    original.slice(at);
+    lfOriginal.slice(at);
   const { html } = renderLesson(source, template, "lesson01.md");
   assert.ok(
     html.includes(
@@ -297,7 +301,7 @@ test("each sentence shows on its own line, and check paragraphs stack", () => {
     ),
   );
   const bold = renderLesson(
-    original.trimEnd() + "\n\n**やることの文です。\n続きです。**\n注意の文です。\n",
+    lfOriginal.trimEnd() + "\n\n**やることの文です。\n続きです。**\n注意の文です。\n",
     template,
     "lesson01.md",
   ).html;
@@ -308,7 +312,7 @@ test("each sentence shows on its own line, and check paragraphs stack", () => {
 
 test("a check with a source exercise adds a try input that copies from it", () => {
   const withChecks = (source) =>
-    original.trimEnd() +
+    lfOriginal.trimEnd() +
     `\n\n:::check ${source}\n書き換えてみましょう。\n:::\n\n:::check ${source}\nもう一度試しましょう。\n:::\n`;
   const page = renderLesson(withChecks("first"), template, "lesson01.md");
   assert.ok(page.exerciseIds.includes("first-try"));
@@ -323,7 +327,7 @@ test("a check with a source exercise adds a try input that copies from it", () =
 });
 
 test("exercises carry their kind, expected blocks bind answers, and progress can be off", () => {
-  const page = renderLesson(original, template, "lesson01.md");
+  const page = renderLesson(lfOriginal, template, "lesson01.md");
   // The saved-code keys depend on these IDs; they must not change.
   assert.deepEqual(page.exerciseIds, [
     "first", "second", "third", "fourth", "printf-two-values", "task1", "task2", "task3",
@@ -334,12 +338,12 @@ test("exercises carry their kind, expected blocks bind answers, and progress can
   assert.equal(page.outputs["printf-two-values"], "10 A");
   assert.match(page.html, /data-progress="off"/);
   assert.match(
-    renderLesson(original.replace("progress: off\n", ""), template, "lesson01.md").html,
+    renderLesson(lfOriginal.replace("progress: off\n", ""), template, "lesson01.md").html,
     /data-progress="on"/,
   );
   // The sample's answer is the block right after it, not a later one.
   const extra = renderLesson(
-    original.trimEnd() +
+    lfOriginal.trimEnd() +
       "\n\n:::exercise extra extra.c\n```c\nint main(void) {\n    return 0;\n}\n```\n:::\n\n:::expected\n直後の出力例\n:::\n\n本文です。\n\n:::expected\n後の出力例\n:::\n\n## 発展課題（余裕がある人のみ） {#extension}\n\n:::exercise ext1\n:::\n",
     template,
     "lesson01.md",
@@ -347,13 +351,13 @@ test("exercises carry their kind, expected blocks bind answers, and progress can
   assert.equal(extra.outputs.extra, "直後の出力例");
   assert.match(extra.html, /data-exercise="ext1" data-kind="task" [^>]*data-bonus/);
   assert.throws(
-    () => renderLesson(original.trimEnd() + "\n\n:::expected nothing\nx\n:::\n", template, "lesson01.md"),
+    () => renderLesson(lfOriginal.trimEnd() + "\n\n:::expected nothing\nx\n:::\n", template, "lesson01.md"),
     /出力例の対象 nothing が見つかりません/,
   );
 });
 
 test("generated pages open and close every div", () => {
-  const { html } = renderLesson(original, template, "lesson01.md");
+  const { html } = renderLesson(lfOriginal, template, "lesson01.md");
   const opened = html.match(/<div\b/g).length;
   const closed = html.match(/<\/div>/g).length;
   assert.equal(opened, closed);
