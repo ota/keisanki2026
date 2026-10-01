@@ -1,6 +1,8 @@
 import "./style.css";
 import { createSubmissionFile } from "./export.js";
 import { drawSample } from "./sample.js";
+import { escapeHtml, highlightHtml } from "./highlight.js";
+import { compareToSample, normalizeOutput, renderProgress, sameCode } from "./progress.js";
 
 const sampleModules = import.meta.glob("./generated/*-samples.js", {
   eager: true,
@@ -12,6 +14,25 @@ if (import.meta.hot) {
   });
 }
 const samples = sampleModules[`./generated/${lesson}-samples.js`]?.samples ?? {};
+// Expected output of each sample and of tasks whose answer is fixed.
+const outputs = sampleModules[`./generated/${lesson}-samples.js`]?.outputs ?? {};
+const progressEntries = [];
+// "progress: off" in a lesson's front matter keeps the panel hidden.
+const progressPanel =
+  document.body.dataset.progress === "off"
+    ? null
+    : document.querySelector("#progress");
+let progressFrame;
+function updateProgress() {
+  if (!progressPanel) return;
+  cancelAnimationFrame(progressFrame);
+  progressFrame = requestAnimationFrame(() =>
+    renderProgress(
+      progressPanel,
+      progressEntries.map(({ evaluate, ...entry }) => ({ ...entry, done: evaluate().done })),
+    ),
+  );
+}
 
 const sampleCanvases = [];
 for (const [name, lines] of Object.entries(samples)) {
@@ -21,6 +42,11 @@ for (const [name, lines] of Object.entries(samples)) {
   sampleCanvases.push([canvas, lines]);
   drawSample(canvas, lines);
 }
+// A canvas keeps whatever font was available when it was drawn, so redraw
+// once the web font has loaded; otherwise a slow load leaves the fallback.
+document.fonts?.load('14px "DM Mono"').then(() => {
+  for (const [canvas, lines] of sampleCanvases) drawSample(canvas, lines);
+});
 let resizeFrame;
 window.addEventListener("resize", () => {
   cancelAnimationFrame(resizeFrame);
@@ -101,6 +127,32 @@ function runC(code, onStatus) {
 function setAllRunButtonsDisabled(disabled) {
   for (const button of document.querySelectorAll(".run-btn"))
     button.disabled = disabled;
+  for (const button of document.querySelectorAll(".reset-btn, .copy-btn, .diff-btn"))
+    button.disabled = disabled;
+}
+
+// Buttons that replace the input act on a second press within 4 seconds,
+// so one accidental click does not discard what the student typed.
+function twoPress(button, confirmText, action, needsConfirm = () => true) {
+  const label = button.textContent;
+  let timer;
+  const restore = () => {
+    clearTimeout(timer);
+    timer = undefined;
+    button.textContent = label;
+    button.classList.remove("confirming");
+  };
+  button.addEventListener("click", () => {
+    if (running) return;
+    if (!timer && needsConfirm()) {
+      button.textContent = confirmText;
+      button.classList.add("confirming");
+      timer = setTimeout(restore, 4000);
+      return;
+    }
+    restore();
+    action();
+  });
 }
 
 for (const exercise of document.querySelectorAll(".exercise")) {
@@ -110,26 +162,181 @@ for (const exercise of document.querySelectorAll(".exercise")) {
     exercise.dataset.exercise;
   const editor = exercise.querySelector(".editor");
   const gutter = exercise.querySelector(".gutter");
+  // Colored copy of the code behind the transparent textarea. The textarea
+  // stays the real input, so paste blocking, IME and autosave are unchanged.
+  const codeArea = document.createElement("div");
+  codeArea.className = "code-area";
+  const highlight = document.createElement("pre");
+  highlight.className = "code-highlight";
+  highlight.setAttribute("aria-hidden", "true");
+  editor.before(codeArea);
+  codeArea.append(highlight, editor);
+  editor.classList.add("has-highlight");
+  const syncScroll = () => {
+    gutter.scrollTop = highlight.scrollTop = editor.scrollTop;
+    highlight.scrollLeft = editor.scrollLeft;
+  };
   const status = exercise.querySelector(".status");
   const output = exercise.querySelector(".output");
   const outputText = output.querySelector("pre");
   const exitCode = output.querySelector(".exit-code");
+  const replaceCode = (code, message) => {
+    editor.value = code;
+    editor.dispatchEvent(new Event("input", { bubbles: true }));
+    status.classList.remove("error");
+    status.textContent = message;
+  };
+  // Fix exercises: restore the broken starting code.
+  const resetButton = exercise.querySelector(".reset-btn");
+  if (resetButton)
+    twoPress(resetButton, "もう一度押すと戻します", () =>
+      replaceCode(editor.defaultValue, "最初のコードに戻しました。"),
+    );
+  // Inputs under a check: copy the student's own code from the exercise above.
+  const copyButton = exercise.querySelector(".copy-btn");
+  const source = document.querySelector(
+    `[data-exercise="${exercise.dataset.copyFrom}"] .editor`,
+  );
+  if (copyButton)
+    twoPress(
+      copyButton,
+      "もう一度押すと上書きします",
+      () => {
+        if (!source.value.trim()) {
+          status.textContent = "先に上の入力欄にコードを入力してください。";
+          status.classList.add("error");
+          return;
+        }
+        replaceCode(source.value, "上のコードをコピーしました。書き換えて実行しましょう。");
+      },
+      () => editor.value.trim() && source.value.trim() && editor.value !== source.value,
+    );
+  // The last run of each input is kept with the code, so an input counts as
+  // done only while its code is unchanged since a successful run.
+  const id = exercise.dataset.exercise;
+  const kind = exercise.dataset.kind;
+  const expected = outputs[id];
+  const runKey = `${key}:run`;
+  const readRun = () => {
+    try {
+      return JSON.parse(localStorage.getItem(runKey));
+    } catch {
+      return null;
+    }
+  };
+  const writeRun = (record) => {
+    try {
+      localStorage.setItem(runKey, JSON.stringify(record));
+    } catch {
+      /* Without storage the result still shows until the page is reloaded. */
+    }
+  };
+  const evaluate = () => {
+    const code = editor.value;
+    const run = readRun();
+    if (!code.trim()) return { done: false, reason: "empty" };
+    if (!run || run.code !== code) return { done: false, reason: "not-run" };
+    if (!run.ok) return { done: false, reason: "error" };
+    if (kind === "sample" && !sameCode(code, samples[id].join("\n")))
+      return { done: false, reason: "sample-diff" };
+    if (kind === "fix" && sameCode(code, editor.defaultValue))
+      return { done: false, reason: "unchanged" };
+    if (kind === "try" && source && sameCode(code, source.value))
+      return { done: false, reason: "unchanged" };
+    if (run.match === false) return { done: false, reason: "output" };
+    return { done: true };
+  };
+  const passText = {
+    sample: "見本と同じコードで、正しく実行できました。",
+    fix: "エラーを直せました。",
+    try: "書き換えて実行できました。",
+    task: expected === undefined ? "エラーなく実行できました。" : "出力例と同じ結果です。",
+  }[kind];
+  const feedback = {
+    "sample-diff": "実行できましたが、見本と違うところがあります。「見本と比べる」で確かめましょう。",
+    unchanged:
+      kind === "try"
+        ? "コピーしたままです。確認の指示どおりに書き換えてから実行しましょう。"
+        : "最初のコードのままです。直してから実行しましょう。",
+    output: "実行できましたが、出力例と違います。空白や記号も確かめましょう。",
+  };
+  const passNote = exercise.querySelector(".pass-note");
+  const showPass = () => {
+    passNote.hidden = !evaluate().done;
+    passNote.textContent = passNote.hidden ? "" : "✅ 合格";
+  };
+  progressEntries.push({
+    id,
+    kind,
+    label: exercise.dataset.label,
+    bonus: exercise.hasAttribute("data-bonus"),
+    evaluate,
+  });
+  // Lines that differ from the sample, marked until the code is edited.
+  let diffMarks = null;
+  const markLine = (line, column) =>
+    `<span class="diff-line">${escapeHtml(line.slice(0, column))}<mark class="diff-char">${escapeHtml(line[column] ?? " ")}</mark>${escapeHtml(line.slice(column + 1))}</span>`;
+  exercise.querySelector(".diff-btn")?.addEventListener("click", () => {
+    if (running) return;
+    status.classList.remove("error", "pass");
+    if (!editor.value.trim()) {
+      status.textContent = "まずコードを入力してください。";
+      status.classList.add("error");
+      return;
+    }
+    const { marks, messages } = compareToSample(editor.value, samples[id]);
+    diffMarks = marks.size ? marks : null;
+    updateGutter();
+    if (!messages.length) {
+      status.textContent = "見本と同じです 🎉";
+      return;
+    }
+    status.replaceChildren(`見本と違うところが${messages.length}か所あります。`);
+    status.classList.add("error");
+    const list = document.createElement("ul");
+    list.className = "diff-list";
+    for (const text of messages.slice(0, 6)) {
+      const item = document.createElement("li");
+      item.textContent = text;
+      list.append(item);
+    }
+    if (messages.length > 6) {
+      const item = document.createElement("li");
+      item.textContent = `ほか${messages.length - 6}か所`;
+      list.append(item);
+    }
+    status.append(list);
+  });
   const saveNote = document.createElement("div");
   saveNote.className = "save-note";
   saveNote.setAttribute("role", "status");
   saveNote.setAttribute("aria-live", "polite");
   editor.closest(".editor-wrap").insertAdjacentElement("afterend", saveNote);
   const updateGutter = () => {
-    const count = Math.max(8, editor.value.split("\n").length);
-    gutter.innerHTML = Array.from(
-      { length: count },
-      (_, index) => index + 1,
+    const minimum = exercise.classList.contains("try-exercise") ? 4 : 8;
+    const count = Math.max(minimum, editor.value.split("\n").length);
+    gutter.innerHTML = Array.from({ length: count }, (_, index) =>
+      diffMarks?.has(index + 1)
+        ? `<span class="diff-num">${index + 1}</span>`
+        : index + 1,
     ).join("<br>");
-    gutter.scrollTop = editor.scrollTop;
+    highlight.innerHTML =
+      (diffMarks
+        ? editor.value
+            .split("\n")
+            .map((line, index) =>
+              diffMarks.has(index + 1)
+                ? markLine(line, diffMarks.get(index + 1))
+                : highlightHtml(line),
+            )
+            .join("\n")
+        : highlightHtml(editor.value)) + "\n ";
+    syncScroll();
   };
   try {
     const saved = localStorage.getItem(key);
-    editor.value = saved || "";
+    // Fix exercises start from the code in the page; clearing it restores that code.
+    editor.value = saved || editor.defaultValue;
     saveNote.textContent = saved
       ? "前回の入力を復元しました · この端末に保存"
       : "入力内容はこの端末に自動保存されます";
@@ -139,8 +346,12 @@ for (const exercise of document.querySelectorAll(".exercise")) {
     saveNote.classList.add("save-error");
   }
   updateGutter();
+  showPass();
   editor.addEventListener("input", () => {
+    diffMarks = null;
     updateGutter();
+    showPass();
+    updateProgress();
     output.hidden = true;
     try {
       localStorage.setItem(key, editor.value);
@@ -154,9 +365,11 @@ for (const exercise of document.querySelectorAll(".exercise")) {
       saveNote.classList.add("save-error");
     }
   });
-  editor.addEventListener("scroll", () => {
-    gutter.scrollTop = editor.scrollTop;
-  });
+  editor.addEventListener("scroll", syncScroll);
+  // While the IME is composing, show the textarea's own text so the
+  // composition (and its underline or background) stays readable.
+  editor.addEventListener("compositionstart", () => codeArea.classList.add("composing"));
+  editor.addEventListener("compositionend", () => codeArea.classList.remove("composing"));
   const blockPaste = (event) => {
     event.preventDefault();
     status.textContent =
@@ -196,9 +409,10 @@ for (const exercise of document.querySelectorAll(".exercise")) {
       return;
     }
     running = true;
+    editor.readOnly = true;
     setAllRunButtonsDisabled(true);
     output.hidden = true;
-    status.classList.remove("error");
+    status.classList.remove("error", "pass");
     status.textContent = "Cコンパイラを準備中…";
     const codeAtRun = editor.value;
     try {
@@ -225,27 +439,40 @@ for (const exercise of document.querySelectorAll(".exercise")) {
         ? "終了コード: " + (result.exitCode ?? "コンパイルエラー")
         : "終了コード: 0";
       output.hidden = false;
+      writeRun({
+        code: codeAtRun,
+        ok: !failed,
+        match:
+          failed || expected === undefined
+            ? null
+            : normalizeOutput(result.stdout ?? result.output ?? "") ===
+              normalizeOutput(expected),
+      });
+      const verdict = evaluate();
       if (failed) {
         status.textContent = "エラーを確認して直してみましょう。";
         status.classList.add("error");
-      } else if (
-        lesson === "lesson01" &&
-        exercise.dataset.exercise === "task3" &&
-        result.stdout.trimEnd() === "  *\n ***\n*****"
-      ) {
-        status.textContent = "山形模様が表示できました。";
+      } else if (verdict.done) {
+        status.textContent = `✅ 合格：${passText}`;
+        status.classList.add("pass");
       } else {
-        status.textContent = "実行できました。出力を確認してください。";
+        status.textContent =
+          feedback[verdict.reason] ?? "実行できました。出力を確認してください。";
       }
     } catch (error) {
       status.textContent = error.message;
       status.classList.add("error");
     } finally {
+      showPass();
+      updateProgress();
       running = false;
+      editor.readOnly = false;
       setAllRunButtonsDisabled(false);
     }
   });
 }
+
+updateProgress();
 
 const exportForm = document.querySelector("#export-form");
 exportForm.addEventListener("submit", async (event) => {

@@ -374,6 +374,15 @@ h1 {
   color: #fff;
   font-weight: 500;
 }
+.fix-head {
+  background: #5a2f2b;
+}
+.fix-head .file-icon {
+  background: #b0473d;
+}
+.fix-head .sample-tag {
+  color: #f0c7c1;
+}
 .sample-tag {
   margin-left: auto;
   color: #a2bdaa;
@@ -433,6 +442,61 @@ h1 {
   white-space: pre;
   overflow: auto;
 }
+.code-area {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+/* Must match .editor exactly: same font, size, line height, padding, tabs. */
+.code-highlight {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 13px 15px 80px;
+  overflow: hidden;
+  color: #254637;
+  font-family: "DM Mono", monospace;
+  font-size: 15px;
+  line-height: 27px;
+  tab-size: 4;
+  white-space: pre;
+  pointer-events: none;
+}
+.code-highlight::after {
+  content: "";
+  display: inline-block;
+  width: 80px;
+}
+.editor.has-highlight {
+  position: relative;
+  color: transparent;
+  caret-color: #254637;
+}
+.composing .editor.has-highlight {
+  color: #254637;
+}
+.composing .code-highlight {
+  visibility: hidden;
+}
+.editor.has-highlight::selection {
+  background: #3b977140;
+}
+.tok-keyword {
+  color: #1f7a55;
+}
+.tok-string {
+  color: #a4482a;
+}
+.tok-number {
+  color: #8a5a00;
+}
+.tok-comment {
+  color: #6f8578;
+}
+.tok-directive {
+  color: #7a4cb8;
+}
 .editor::placeholder {
   color: #b2bfb3;
 }
@@ -482,6 +546,16 @@ h1 {
   background: #27845e;
   color: #fff;
   box-shadow: 0 3px 7px #277f5b25;
+}
+.reset-btn,
+.copy-btn,
+.diff-btn {
+  background: #e6ede7;
+  color: #3d5a4b;
+}
+.buttons .confirming {
+  background: #f3e1dc;
+  color: #9a3b2f;
 }
 .buttons button:hover {
   filter: brightness(0.96);
@@ -539,6 +613,23 @@ h1 {
   padding: 15px 20px;
   margin-top: 22px;
 }
+.check + p {
+  margin-top: 30px;
+}
+.check + .try-exercise {
+  margin-top: 12px;
+}
+.try-exercise {
+  border-left: 3px solid #d5b462;
+}
+.try-exercise .editor-wrap,
+.try-exercise .editor {
+  min-height: 130px;
+}
+.check-body {
+  flex: 1;
+  min-width: 0;
+}
 .check b {
   font-size: 12px;
   letter-spacing: 0.05em;
@@ -551,6 +642,11 @@ h1 {
   line-height: 1.8;
   margin: 0;
   color: #625d4a;
+}
+/* What to do is bold and dark; notes around it stay in the lighter color. */
+.check strong {
+  font-weight: 700;
+  color: #3a3322;
 }
 .type-table {
   border: 1px solid #e0e6de;
@@ -579,10 +675,13 @@ h1 {
 .type-table code {
   justify-self: start;
 }
+.table-scroll {
+  overflow-x: auto;
+  margin: 25px 0 14px;
+}
 .section table {
   width: 100%;
   border-collapse: collapse;
-  margin: 25px 0 14px;
   border: 1px solid #e0e6de;
   background: #fff;
   font-size: 14px;
@@ -914,4 +1013,120 @@ h1 {
 .sample-scroll {
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* Passing an exercise, and differences from the sample. */
+.pass-note {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: #e1f2e6;
+  color: #1d6a38;
+  font-size: 13px;
+  font-weight: 700;
+}
+.pass-note[hidden] {
+  display: none;
+}
+.status.pass {
+  color: #1d6a38;
+  font-weight: 700;
+}
+.status .diff-list {
+  margin: 6px 0 0;
+  padding-left: 1.3em;
+}
+.gutter .diff-num {
+  color: #c0392b;
+  font-weight: 700;
+}
+.code-highlight .diff-line {
+  background: #fbe3e0;
+}
+.code-highlight .diff-char {
+  background: #f0a79d;
+  color: inherit;
+  padding: 0;
+  border-radius: 2px;
+}
+
+/* Progress panel above the submission form. */
+.progress-panel:empty {
+  display: none;
+}
+.progress-panel {
+  margin: 0 0 26px;
+  padding: 18px 22px;
+  border: 1px solid #dde4db;
+  border-radius: 12px;
+  background: #fff;
+}
+.progress-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.progress-title {
+  font-weight: 800;
+}
+.progress-rate {
+  font-size: 26px;
+  color: #27845e;
+}
+.progress-count {
+  color: #5d7468;
+  font-size: 14px;
+}
+.progress-bar {
+  height: 10px;
+  margin: 10px 0 12px;
+  border-radius: 999px;
+  background: #e3ebe4;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3b9771, #6fae4f);
+  transition: width 0.3s;
+}
+.progress-message {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.progress-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.progress-breakdown li {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #edf2ee;
+  color: #4a6656;
+}
+.progress-breakdown li.complete {
+  background: #e1f2e6;
+  color: #1d6a38;
+}
+.progress-breakdown li.bonus {
+  background: #f6efd9;
+  color: #7a5a14;
+}
+.progress-remaining,
+.progress-note {
+  margin: 0;
+  font-size: 13px;
+  color: #5d7468;
+}
+.progress-note {
+  margin-top: 6px;
+  color: #85998d;
 }

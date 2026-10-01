@@ -247,3 +247,114 @@ test("local editing API checks host, origin and save token", async (t) => {
   assert.equal(saved.status, 200);
   assert.ok(saved.data.source.includes("日本語の保存確認"));
 });
+
+test("fix exercises put editable code with errors into the input, not the sample canvas", async (t) => {
+  const broken = '#include <stdio.h>\n\nint main(void) {\n    printf("<a>")\n    return 0;\n}';
+  const at = original.lastIndexOf("\n## ");
+  const source =
+    original.slice(0, at) +
+    `\n:::exercise fix-one hello.c fix\n\`\`\`c\n${broken}\n\`\`\`\n:::\n` +
+    original.slice(at);
+  const page = renderLesson(source, template, "lesson01.md");
+  assert.equal(page.samples["fix-one"], undefined);
+  assert.ok(page.exerciseIds.includes("fix-one"));
+  const escaped = broken.replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  assert.ok(page.html.includes(`aria-label="直すコード"`));
+  assert.ok(page.html.includes(`>${escaped}</textarea>`));
+  assert.ok(page.html.includes('<button type="button" class="reset-btn">最初のコードに戻す</button>'));
+  assert.throws(
+    () => renderLesson(source.replace("hello.c fix", "hello.c other"), template, "lesson01.md"),
+    /指定が不正/,
+  );
+  const { store, file } = await fixture(t, source);
+  const model = await store.load("lesson01");
+  const field = model.fields.find(({ exercise }) => exercise === "fix-one");
+  assert.equal(field.fix, true);
+  assert.equal(field.value, broken);
+  const fixed = broken.replace('("<a>")', '("<b>");');
+  await store.save("lesson01", {
+    revision: model.revision,
+    changes: [{ key: field.key, value: fixed }],
+  });
+  assert.equal(await readFile(file, "utf8"), source.replace(broken, fixed));
+});
+
+test("each sentence shows on its own line, and check paragraphs stack", () => {
+  const at = original.lastIndexOf("\n## ");
+  const source =
+    original.slice(0, at) +
+    "\n文の一つ目です。二つ目は「引用。」を含みます。`a。b` の後の文です。\n最後の文です。\n\n:::check\n一つ目の段落です。\n\n二つ目の段落です。\n:::\n" +
+    original.slice(at);
+  const { html } = renderLesson(source, template, "lesson01.md");
+  assert.ok(
+    html.includes(
+      "<p>文の一つ目です。<br>\n二つ目は「引用。」を含みます。<br>\n<code>a。b</code> の後の文です。<br>\n最後の文です。</p>",
+    ),
+  );
+  assert.ok(
+    html.includes(
+      '<div class="check"><b>確認</b><div class="check-body"><p>一つ目の段落です。</p>\n<p>二つ目の段落です。</p>\n</div></div>',
+    ),
+  );
+  const bold = renderLesson(
+    original.trimEnd() + "\n\n**やることの文です。\n続きです。**\n注意の文です。\n",
+    template,
+    "lesson01.md",
+  ).html;
+  assert.ok(
+    bold.includes("<p><strong>やることの文です。<br>\n続きです。</strong><br>\n注意の文です。</p>"),
+  );
+});
+
+test("a check with a source exercise adds a try input that copies from it", () => {
+  const withChecks = (source) =>
+    original.trimEnd() +
+    `\n\n:::check ${source}\n書き換えてみましょう。\n:::\n\n:::check ${source}\nもう一度試しましょう。\n:::\n`;
+  const page = renderLesson(withChecks("first"), template, "lesson01.md");
+  assert.ok(page.exerciseIds.includes("first-try"));
+  assert.ok(page.exerciseIds.includes("first-try2"));
+  assert.match(page.html, /data-exercise="first-try" data-kind="try" [^>]*data-copy-from="first"/);
+  assert.ok(page.html.includes('<button type="button" class="copy-btn">上のコードをコピー</button>'));
+  assert.equal(page.samples["first-try"], undefined);
+  assert.throws(
+    () => renderLesson(withChecks("missing"), template, "lesson01.md"),
+    /コピー元 missing が見つかりません/,
+  );
+});
+
+test("exercises carry their kind, expected blocks bind answers, and progress can be off", () => {
+  const page = renderLesson(original, template, "lesson01.md");
+  // The saved-code keys depend on these IDs; they must not change.
+  assert.deepEqual(page.exerciseIds, [
+    "first", "second", "third", "fourth", "printf-two-values", "task1", "task2", "task3",
+  ]);
+  assert.match(page.html, /data-exercise="first" data-kind="sample" data-label="見本：Hello World"/);
+  assert.match(page.html, /data-exercise="task3" data-kind="task" data-label="課題3 山形模様を表示する"/);
+  assert.equal(page.outputs.task3, "  *\n ***\n*****");
+  assert.equal(page.outputs["printf-two-values"], "10 A");
+  assert.match(page.html, /data-progress="off"/);
+  assert.match(
+    renderLesson(original.replace("progress: off\n", ""), template, "lesson01.md").html,
+    /data-progress="on"/,
+  );
+  // The sample's answer is the block right after it, not a later one.
+  const extra = renderLesson(
+    original.trimEnd() +
+      "\n\n:::exercise extra extra.c\n```c\nint main(void) {\n    return 0;\n}\n```\n:::\n\n:::expected\n直後の出力例\n:::\n\n本文です。\n\n:::expected\n後の出力例\n:::\n\n## 発展課題（余裕がある人のみ） {#extension}\n\n:::exercise ext1\n:::\n",
+    template,
+    "lesson01.md",
+  );
+  assert.equal(extra.outputs.extra, "直後の出力例");
+  assert.match(extra.html, /data-exercise="ext1" data-kind="task" [^>]*data-bonus/);
+  assert.throws(
+    () => renderLesson(original.trimEnd() + "\n\n:::expected nothing\nx\n:::\n", template, "lesson01.md"),
+    /出力例の対象 nothing が見つかりません/,
+  );
+});
+
+test("generated pages open and close every div", () => {
+  const { html } = renderLesson(original, template, "lesson01.md");
+  const opened = html.match(/<div\b/g).length;
+  const closed = html.match(/<\/div>/g).length;
+  assert.equal(opened, closed);
+});

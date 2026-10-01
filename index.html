@@ -13,7 +13,7 @@
       rel="stylesheet"
     />
   </head>
-  <body data-lesson="lesson01" data-number="01">
+  <body data-lesson="lesson01" data-number="01" data-progress="off">
     <div class="shell">
       <aside class="sidebar" aria-label="教材の目次">
         <div class="brand">
@@ -81,7 +81,7 @@
 <li class="concept"><p><code>\n</code> は改行を表します。</p></li>
 <li class="concept"><p><code>return 0;</code> は正常終了を表します。</p></li>
 <li class="concept"><p><code>//</code> から行末まではコメントです。</p></li></ul>
-<div class="exercise" data-exercise="first">
+<div class="exercise" data-exercise="first" data-kind="sample" data-label="見本：Hello World">
     <div class="sample-head"><span class="file-icon">C</span> hello.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
@@ -89,19 +89,20 @@
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-first" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
-<div class="check"><b>確認</b><p>Hello, World! 以外の文字列を表示してみましょう。</p>
-</div>
+<div class="check"><b>確認</b><div class="check-body"><p>Hello, World! 以外の文字列を表示してみましょう。</p>
+</div></div>
 </section>
 <section id="variable" class="section"><h2>変数</h2><p>Cでは、変数を使う前にデータの型を宣言します。</p>
 <p>たとえば、整数型の変数 <code>number</code> を作って <code>10</code> という値を入れるには、　
 <code>int number = 10;</code> と書きます。</p>
 <p>printf で変数を用いるには、%ではじまる「書式指定子」を書きます。</p>
-<div class="exercise" data-exercise="second">
+<div class="exercise" data-exercise="second" data-kind="sample" data-label="見本：変数">
     <div class="sample-head"><span class="file-icon">C</span> variable.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
@@ -109,13 +110,14 @@
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-second" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
 <p>書式指定子の前後に、好きな内容を書くことができます。</p>
-<div class="exercise" data-exercise="third">
+<div class="exercise" data-exercise="third" data-kind="sample" data-label="見本：変数（2つ目）">
     <div class="sample-head"><span class="file-icon">C</span> variable.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
@@ -123,14 +125,15 @@
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-third" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
 </section>
 <section id="variables" class="section"><h2>変数の型</h2><p>書式指定子は、データの型に合わせて使い分けます。</p>
-<table>
+<div class="table-scroll"><table>
 <thead>
 <tr>
 <th>型</th>
@@ -160,9 +163,9 @@
 <td><code>%s</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>1文字は <code>'A'</code>、文字列は <code>&quot;Hello&quot;</code> のように囲みます。</p>
-<div class="exercise" data-exercise="fourth">
+<div class="exercise" data-exercise="fourth" data-kind="sample" data-label="見本：変数の型">
     <div class="sample-head"><span class="file-icon">C</span> variables.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
@@ -170,13 +173,14 @@
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-fourth" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
-<div class="check"><b>確認</b><p><code>letter</code> と <code>word</code> を変えると出力がどう変わるか、確認してみましょう。</p>
-</div>
+<div class="check"><b>確認</b><div class="check-body"><p><code>letter</code> と <code>word</code> を変えると出力がどう変わるか、確認してみましょう。</p>
+</div></div>
 </section>
 <section id="printf-two-values" class="section"><h2>printf の応用</h2><ul>
 <li>変数をカンマ <code>,</code> で区切ると、1つの <code>printf</code> で複数の値を表示できます。
@@ -186,7 +190,7 @@
 </ul>
 </li>
 </ul>
-<div class="exercise" data-exercise="printf-two-values">
+<div class="exercise" data-exercise="printf-two-values" data-kind="sample" data-label="見本：printf の応用">
     <div class="sample-head"><span class="file-icon">C</span> printf_two.c<span class="sample-tag">見ながら入力</span></div>
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
     <div class="work">
@@ -194,24 +198,27 @@
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-printf-two-values" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
       </div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
 <div class="expected"><code>10 A</code></div>
 </section>
-<section id="challenge" class="section challenge-section"><h2>演習問題</h2><div class="lesson-notice"><p><strong>※AIの使用を禁止します。自分で考えて解答しましょう。</strong></p>
+<section id="challenge" class="section challenge-section"><h2>演習問題</h2><div class="lesson-notice"><p><strong>※AIの使用を禁止します。<br>
+自分で考えて解答しましょう。</strong></p>
 </div>
 <h3 class="task-title">課題1 <span>好きな文字列を表示する</span></h3>
 <p>「Hello World」以外の好きな文字列を出力するCプログラムを作成してください。</p>
-<div class="exercise" data-exercise="task1">
+<div class="exercise" data-exercise="task1" data-kind="task" data-label="課題1 好きな文字列を表示する">
 
     <div class="work">
 
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-task1" aria-label="課題1のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
       </div>
+      <div class="pass-note" hidden></div>
       <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
@@ -220,13 +227,14 @@
 <h3 class="task-title">課題2 <span>出席番号と氏名を表示する</span></h3>
 <p>整数の変数 <code>number</code> と文字列の変数 <code>name</code> を使い、あなたの出席番号と氏名を次のように表示してください。</p>
 <div class="expected"><code>出席番号 99 番の 太田健吾 です。</code></div>
-<div class="exercise" data-exercise="task2">
+<div class="exercise" data-exercise="task2" data-kind="task" data-label="課題2 出席番号と氏名を表示する">
 
     <div class="work">
 
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-task2" aria-label="課題2のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
       </div>
+      <div class="pass-note" hidden></div>
       <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
@@ -239,13 +247,14 @@
 *****
 </pre>
 </div>
-<div class="exercise" data-exercise="task3">
+<div class="exercise" data-exercise="task3" data-kind="task" data-label="課題3 山形模様を表示する">
 
     <div class="work">
 
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
         <textarea id="editor-task3" aria-label="課題3のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
       </div>
+      <div class="pass-note" hidden></div>
       <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
@@ -267,6 +276,7 @@
 </section>
           <section id="save" class="section submission">
             <h2>Moodle提出用ファイル保存</h2>
+            <div id="progress" class="progress-panel" aria-live="polite"></div>
             <form id="export-form">
               <div class="identity-fields">
                 <label for="attendance-number">

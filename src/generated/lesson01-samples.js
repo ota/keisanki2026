@@ -54,3 +54,7 @@ export const samples = {
     "}"
   ]
 };
+export const outputs = {
+  "printf-two-values": "10 A",
+  "task3": "  *\n ***\n*****"
+};

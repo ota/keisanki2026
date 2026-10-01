@@ -13,7 +13,7 @@
       rel="stylesheet"
     />
   </head>
-  <body data-lesson="{{SLUG}}" data-number="{{NUMBER}}">
+  <body data-lesson="{{SLUG}}" data-number="{{NUMBER}}" data-progress="{{PROGRESS}}">
     <div class="shell">
       <aside class="sidebar" aria-label="教材の目次">
         <div class="brand">
@@ -35,6 +35,7 @@
 {{CONTENT}}
           <section id="save" class="section submission">
             <h2>Moodle提出用ファイル保存</h2>
+            <div id="progress" class="progress-panel" aria-live="polite"></div>
             <form id="export-form">
               <div class="identity-fields">
                 <label for="attendance-number">

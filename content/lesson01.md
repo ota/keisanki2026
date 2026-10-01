@@ -5,6 +5,7 @@ number: 01
 term: 後期 · Q3
 subhead: 後期 第1回
 footer: 後期 第1回 / C言語プログラミング入門
+progress: off
 ---
 
 ## 今回の目標 {#goals}
@@ -198,7 +199,7 @@ int main(void) {
 
 空白と `*` を組み合わせて、次のような山形模様を出力するCプログラムを作成してください。
 
-:::expected
+:::expected task3
 ```
   *
  ***

@@ -1,10 +1,12 @@
-function tokenColor(token) {
-  if (token.startsWith("#")) return "#b693e8";
-  if (token.startsWith('"') || token.startsWith("'")) return "#f0af8e";
-  if (/^(int|float|char|return|void)$/.test(token)) return "#86c9b4";
-  if (/^\d/.test(token)) return "#e0ca80";
-  return "#e4eee8";
-}
+import { tokenizeLine } from "./highlight.js";
+
+const tokenColors = {
+  comment: "#87a294",
+  directive: "#b693e8",
+  string: "#f0af8e",
+  keyword: "#86c9b4",
+  number: "#e0ca80",
+};
 
 export function drawSample(canvas, lines) {
   const parent = canvas.parentElement;
@@ -36,20 +38,10 @@ export function drawSample(canvas, lines) {
     ctx.fillText(String(index + 1), 43, y);
     ctx.textAlign = "left";
     let x = 76;
-    const tokenPattern =
-      /#[^\s]+(?:\s*<[^>]+>)?|"([^"\\]|\\.)*"|'([^'\\]|\\.)*'|\b(?:int|float|char|return|void)\b|\b\d+(?:\.\d+)?f?\b/g;
-    let last = 0;
-    for (const match of line.matchAll(tokenPattern)) {
-      const plain = line.slice(last, match.index);
-      ctx.fillStyle = "#e4eee8";
-      ctx.fillText(plain, x, y);
-      x += ctx.measureText(plain).width;
-      ctx.fillStyle = tokenColor(match[0]);
-      ctx.fillText(match[0], x, y);
-      x += ctx.measureText(match[0]).width;
-      last = match.index + match[0].length;
+    for (const [text, kind] of tokenizeLine(line)) {
+      ctx.fillStyle = tokenColors[kind] || "#e4eee8";
+      ctx.fillText(text, x, y);
+      x += ctx.measureText(text).width;
     }
-    ctx.fillStyle = "#e4eee8";
-    ctx.fillText(line.slice(last), x, y);
   });
 }

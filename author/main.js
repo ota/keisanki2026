@@ -6,6 +6,7 @@ import { EditorView } from "prosemirror-view";
 import {
   schema,
   MarkdownParser,
+  MarkdownSerializer,
   defaultMarkdownParser,
   defaultMarkdownSerializer,
 } from "prosemirror-markdown";
@@ -46,6 +47,31 @@ const inlineParser = new MarkdownParser(
   defaultMarkdownParser.tokenizer,
   defaultMarkdownParser.tokens,
 );
+const blockParser = new MarkdownParser(
+  schema,
+  defaultMarkdownParser.tokenizer,
+  defaultMarkdownParser.tokens,
+);
+// Keep a source line break as "\n". The library default turns it into a
+// space, which inserts a space between Japanese sentences on save.
+for (const parser of [blockParser, inlineParser])
+  parser.tokenHandlers.softbreak = (state) => state.addText("\n");
+// The lesson source writes lists with "-" and no blank lines between items.
+const serializer = new MarkdownSerializer(
+  {
+    ...defaultMarkdownSerializer.nodes,
+    bullet_list: (state, node) => state.renderList(node, "  ", () => "- "),
+  },
+  defaultMarkdownSerializer.marks,
+);
+function serializeDoc(doc) {
+  const tr = EditorState.create({ doc }).tr;
+  doc.descendants((node, pos) => {
+    if (node.attrs.tight === false)
+      tr.setNodeMarkup(pos, null, { ...node.attrs, tight: true });
+  });
+  return serializer.serialize(tr.doc);
+}
 let model;
 let changes = new Map();
 let views = [];
@@ -130,7 +156,7 @@ function mountField(field) {
   const host = page.querySelector(`[data-author-field="${field.key}"]`);
   if (!host) return;
   const isInline = field.kind === "inline";
-  const parser = isInline ? inlineParser : defaultMarkdownParser;
+  const parser = isInline ? inlineParser : blockParser;
   const originalDoc = parser.parse(field.value);
   const initialDoc = parser.parse(changes.get(field.key) ?? field.value);
   const firstClass = host.firstElementChild?.className;
@@ -185,7 +211,7 @@ function mountField(field) {
         if (transaction.docChanged) {
           const value = view.state.doc.eq(originalDoc)
             ? field.value
-            : defaultMarkdownSerializer.serialize(view.state.doc);
+            : serializeDoc(view.state.doc);
           setChange(field, value);
         }
         updateToolbar();
@@ -215,6 +241,12 @@ function mountField(field) {
 
 function drawSamples() {
   for (const field of model.fields.filter(({ kind }) => kind === "code")) {
+    if (field.fix) {
+      page.querySelector(
+        `[data-exercise="${field.exercise}"] .editor`,
+      ).value = changes.get(field.key) ?? field.value;
+      continue;
+    }
     const canvas = page.querySelector(
       `[data-exercise="${field.exercise}"] .sample-canvas`,
     );
@@ -252,7 +284,7 @@ function displayModel(nextModel, nextChanges = new Map()) {
   page.replaceChildren(html.querySelector(".shell"));
   document.title = `教材編集 — ${model.title}`;
   for (const control of page.querySelectorAll(
-    "input, textarea, button.run-btn, button.export-btn",
+    "input, textarea, button.run-btn, button.reset-btn, button.copy-btn, button.export-btn",
   ))
     control.disabled = true;
   for (const field of model.fields)

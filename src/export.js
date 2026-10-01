@@ -1,3 +1,4 @@
+import { highlightHtml } from "./highlight.js";
 import stylesheet from "./style.css?raw";
 
 function readAsDataUrl(blob) {
@@ -88,7 +89,9 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
     const editor = exercise.querySelector(".editor");
     const code = document.createElement("pre");
     code.className = "report-code";
-    code.textContent = editor.value || "（未入力）";
+    if (editor.value) code.innerHTML = highlightHtml(editor.value);
+    else code.textContent = "（未入力）";
+    copy.querySelector(".code-highlight")?.remove();
     copy.querySelector(".editor").replaceWith(code);
     copy.querySelector(".work label")?.removeAttribute("for");
     copy.querySelector(".work-footer")?.remove();
@@ -99,6 +102,12 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
     }
   });
 
+  // Keep the progress panel; the rest of the save form is not needed.
+  const progress = report.querySelector("#progress");
+  progress?.remove();
+  // The inputs become plain code in the file, so the links have no target.
+  for (const link of progress?.querySelectorAll("a") ?? [])
+    link.replaceWith(link.textContent);
   report.querySelector("#save").remove();
   const metadata = document.createElement("section");
   metadata.id = "save";
@@ -108,8 +117,12 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
   const list = document.createElement("dl");
   const platform =
     navigator.userAgentData?.platform || navigator.platform || "取得できません";
+  const rate = document.querySelector("#progress .progress-rate")?.textContent;
+  const count = document.querySelector("#progress .progress-count")?.textContent;
   addMetadataRow(list, "出席番号", attendanceNumber);
   addMetadataRow(list, "氏名", studentName);
+  if (rate)
+    addMetadataRow(list, "達成率（この端末での目安）", `${rate}${count ?? ""}`);
   addMetadataRow(list, "取得日時（端末の時計）", savedAtLabel(savedAt));
   addMetadataRow(list, "取得日時（UTC）", savedAt.toISOString());
   addMetadataRow(list, "ブラウザ情報", navigator.userAgent);
@@ -121,7 +134,9 @@ export async function createSubmissionFile({ attendanceNumber, studentName }) {
     `${screen.width} × ${screen.height} ピクセル`,
   );
   addMetadataRow(list, "教材URL", location.origin + location.pathname);
-  metadata.append(heading, list);
+  metadata.append(heading);
+  if (progress?.childElementCount) metadata.append(progress);
+  metadata.append(list);
   report.querySelector(".page-footer").after(metadata);
 
   const safeNumber =
