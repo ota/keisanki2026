@@ -1,0 +1,943 @@
+<!-- Generated from content/lessonXX.md. Edit the Markdown source. -->
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f4ee" />
+    <title>第2回｜演算子 — 2I計算機基礎演習</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body data-lesson="lesson02" data-number="02" data-progress="on">
+    <div class="shell">
+      <aside class="sidebar" aria-label="教材の目次">
+        <div class="brand">
+          <span class="brand-icon">&gt;_</span
+          ><span>計算機基礎演習<small> / 2026</small></span>
+        </div>
+        <div class="side-label">後期 · Q3</div>
+        <a class="current-lesson" href="#top" aria-current="page"
+          ><span>02</span>第2回　演算子</a
+        >
+        <div class="side-label side-sections">今回の内容</div>
+        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#review">前回のおさらい</a><a href="#arithmetic">算術演算子</a><a href="#cast">キャスト演算子</a><a href="#assign">代入演算子とインクリメント</a><a href="#compare">比較演算子と論理演算子</a><a href="#order">演算子の優先順位</a><a href="#errors">エラーを直す</a><a href="#challenge">演習問題</a><a href="#extension">発展課題（余裕がある人のみ）</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
+      </aside>
+      <main id="top" class="main">
+        <header class="topbar">
+          <span>2年 情報コース <span class="slash">/</span> 後期 第2回</span>
+        </header>
+        <article class="lesson">
+<h1>第2回　演算子</h1>
+<section id="goals" class="section"><h2>今回の目標</h2><div class="goal-grid"><div class="goal"><b>01</b><strong>計算する</strong><span>算術演算子で計算し、割り算の答えと余りを求める。</span></div><div class="goal"><b>02</b><strong>型を変える</strong><span>キャストで整数と小数、文字と文字コードを変換する。</span></div><div class="goal"><b>03</b><strong>比べる</strong><span>比較演算子と論理演算子で、条件が成り立つかを調べる。</span></div></div>
+</section><section class="howto" aria-labelledby="howto-title"><div class="howto-icon">⌨</div><div><h3 id="howto-title">演習の進め方</h3><ul>
+<li>見本コードを見ながら、その下の入力欄に自分で打ち込みます。
+<ul>
+<li>入力欄への貼り付けはできません。</li>
+<li>打ち終えたら「見本と比べる」で、見本と違うところを確かめられます。</li>
+</ul>
+</li>
+<li>「実行する」を押し、表示された結果を確かめます。
+<ul>
+<li>条件を満たすと「✅ 合格」と表示されます。</li>
+</ul>
+</li>
+<li>「確認」の下の欄では、「上のコードをコピー」で自分の入力を写してから書き換えます。
+<ul>
+<li>写経した上の欄のコードは、そのまま残ります。</li>
+</ul>
+</li>
+<li>「エラーを直す」の欄には、誤りを含むコードが最初から入っています。
+<ul>
+<li>実行してエラーを確かめ、直してから再実行します。</li>
+<li>分からなくなったら「最初のコードに戻す」を2回押すと、最初のコードに戻ります。</li>
+</ul>
+</li>
+<li>入力内容はパソコンに自動的に保存されます。</li>
+<li>最後に出席番号と氏名を入力し、提出用HTMLを保存してMoodleへ提出します。
+<ul>
+<li>保存欄の「達成状況」で、まだの欄を確かめられます。</li>
+</ul>
+</li>
+</ul>
+</div></section>
+
+<section id="review" class="section"><h2>前回のおさらい</h2><ul>
+<li>変数は <code>型 変数名 = 値;</code> の形で作ります。</li>
+<li><code>printf</code> で値を表示するときは、型に合った書式指定子を使います。
+<ul>
+<li>整数は <code>%d</code>、小数は <code>%f</code>、文字は <code>%c</code>、文字列は <code>%s</code> です。</li>
+</ul>
+</li>
+<li><code>\n</code> は改行です。<br>
+<code>\</code> は、キーボードの <code>¥</code> のキーで入力します。</li>
+</ul>
+<p>まずは見本を見ずに、プログラムを書いてみましょう。<br>
+整数の変数 <code>number</code> に <code>99</code>、小数の変数 <code>pi</code> に <code>3.14</code> を入れて、次のように表示します。<br>
+思い出せないときは、<a href="./lesson01.html#variable">第1回の「変数」</a>を見て確かめます。</p>
+<div class="expected"><pre>99
+3.140000
+</pre>
+</div>
+<div class="exercise" data-exercise="warmup" data-kind="task" data-label="課題：前回のおさらい">
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-warmup" aria-label="warmupのコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+</section>
+<section id="arithmetic" class="section"><h2>算術演算子</h2><p><code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>%</code> は計算に使う記号で、「算術演算子」と呼びます。<br>
+掛け算は <code>×</code> ではなく <code>*</code>、割り算は <code>÷</code> ではなく <code>/</code> と書きます。</p>
+<ul>
+<li>記号は次のキーで入力します。
+<ul>
+<li><code>+</code> はShiftと <code>;</code>、<code>*</code> はShiftと <code>:</code> のキーです。</li>
+<li><code>/</code> は <code>.</code> の右隣のキー、<code>%</code> はShiftと <code>5</code> です。</li>
+</ul>
+</li>
+</ul>
+<div class="exercise" data-exercise="arithmetic" data-kind="sample" data-label="見本：算術演算子">
+    <div class="sample-head"><span class="file-icon">C</span> calc.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-arithmetic">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-arithmetic" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>a + b = 13
+a - b = 7
+a * b = 30
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>printf</code> の <code>%d</code> の位置に、<code>a + b</code> などの計算結果が入ります。</p></li>
+<li class="concept"><p>二重引用符の中の <code>a + b = </code> は文字列なので、計算されずにそのまま表示されます。</p></li></ul>
+<p>次は割り算です。<br>
+整数同士の割り算には、注意する点があります。</p>
+<div class="exercise" data-exercise="division" data-kind="sample" data-label="見本：算術演算子（2つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> divide.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-division">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-division" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>a / b = 3
+a % b = 1
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>int</code> 同士の <code>/</code> は、小数部分を切り捨てた整数になります。<br>
+<code>10 / 3</code> は <code>3</code> です。</p><ul class="concept-details"><li>Pythonでは <code>10 / 3</code> は <code>3.333…</code> でした。<br>
+Cの整数同士では <code>3</code> になります。</li><li>Javaの授業でも同じです。</li></ul></li>
+<li class="concept"><p><code>%</code> は割り算の余りです。<br>
+<code>10 % 3</code> は <code>1</code> です。</p></li>
+<li class="concept"><p><code>printf</code> で <code>%</code> という文字を表示するには、<code>%%</code> と2つ並べます。</p><ul class="concept-details"><li><code>%d</code> などの書式指定子と区別するためです。</li></ul></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>a</code> を <code>17</code>、<code>b</code> を <code>5</code> に変えます。<br>
+割り算の答えと余りを予想してから実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="division-try" data-kind="try" data-label="確認：算術演算子" data-copy-from="division">
+
+    <div class="work">
+      <label for="editor-division-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-division-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>小数同士の割り算では、答えも小数になります。</p>
+<div class="exercise" data-exercise="float-division" data-kind="sample" data-label="見本：算術演算子（3つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> float_divide.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-float-division">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-float-division" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>x / y = 3.333333
+x / y = 3.33
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>float</code> 同士の <code>/</code> は、小数の答えになります。</p></li>
+<li class="concept"><p><code>%f</code> は、小数点以下を6桁表示します。</p><ul class="concept-details"><li><code>%.2f</code> と書くと、小数点以下2桁まで表示します。<br>
+3桁目は四捨五入されます。</li></ul></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>%.2f</code> を <code>%.4f</code> に変えて実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="float-division-try" data-kind="try" data-label="確認：算術演算子（2つ目）" data-copy-from="float-division">
+
+    <div class="work">
+      <label for="editor-float-division-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-float-division-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+</section>
+<section id="cast" class="section"><h2>キャスト演算子</h2><p>値の前に <code>(float)</code> のように型を書くと、その型に変換できます。<br>
+これを「キャスト」と呼びます。</p>
+<div class="exercise" data-exercise="cast" data-kind="sample" data-label="見本：キャスト演算子">
+    <div class="sample-head"><span class="file-icon">C</span> cast.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-cast">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-cast" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>整数のまま：3
+キャスト：3.500000
+2桁まで：3.50
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>(float)a</code> は、<code>a</code> の値を小数の <code>7.0</code> に変換します。</p><ul class="concept-details"><li>割る数か割られる数の片方が小数なら、もう片方も自動で小数に変換されます。</li><li>そのため、<code>(float)a / b</code> は小数の割り算になり、<code>3.5</code> です。</li></ul></li>
+<li class="concept"><p>書式指定子は、計算結果の型に合わせます。</p><ul class="concept-details"><li>小数の結果は <code>%f</code>、整数の結果は <code>%d</code> で表示します。</li></ul></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、2行目の <code>(float)a / b</code> を <code>(float)(a / b)</code> に変えて実行しましょう。<br>
+表示がどう変わるか確かめます。</strong><br>
+括弧の中が先に整数で計算されて <code>3</code> になり、そのあとで小数に変換されます。</p>
+</div></div><div class="exercise try-exercise" data-exercise="cast-try" data-kind="try" data-label="確認：キャスト演算子" data-copy-from="cast">
+
+    <div class="work">
+      <label for="editor-cast-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-cast-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>文字と、その文字を表す番号（文字コード）も変換できます。</p>
+<div class="exercise" data-exercise="char-code" data-kind="sample" data-label="見本：キャスト演算子（2つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> char_code.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-char-code">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-char-code" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>A = 65
+66 = B
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p>コンピュータの中では、文字は番号で表されています。<br>
+この番号を「文字コード」と呼びます。</p><ul class="concept-details"><li>英数字の文字コードは「ASCII（アスキー）コード」で決まっています。</li></ul></li>
+<li class="concept"><p><code>(int)letter</code> は文字を文字コードに、<code>(char)code</code> は文字コードを文字に変換します。</p></li></ul>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>文字</th>
+<th><code>'0'</code></th>
+<th><code>'1'</code></th>
+<th><code>'A'</code></th>
+<th><code>'B'</code></th>
+<th><code>'a'</code></th>
+<th><code>'b'</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文字コード</td>
+<td>48</td>
+<td>49</td>
+<td>65</td>
+<td>66</td>
+<td>97</td>
+<td>98</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>アルファベットの文字コードは、<code>A</code>・<code>B</code>・<code>C</code>… の順に1ずつ増えます。
+<ul>
+<li>小文字も同じく、<code>a</code> から順に1ずつ増えます。</li>
+</ul>
+</li>
+</ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>'A'</code> を <code>'a'</code> に、<code>66</code> を <code>67</code> に変えて実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="char-code-try" data-kind="try" data-label="確認：キャスト演算子（2つ目）" data-copy-from="char-code">
+
+    <div class="work">
+      <label for="editor-char-code-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-char-code-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+</section>
+<section id="assign" class="section"><h2>代入演算子とインクリメント</h2><p><code>=</code> は、右側の値を左側の変数に入れる「代入」です。<br>
+<code>+=</code> を使うと、今の値に足してから代入できます。</p>
+<div class="exercise" data-exercise="compound" data-kind="sample" data-label="見本：代入演算子とインクリメント">
+    <div class="sample-head"><span class="file-icon">C</span> compound.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-compound">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-compound" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>はじめ：80
+10点追加：90
+2倍：180
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>score += 10;</code> は <code>score = score + 10;</code> と同じ意味です。</p><ul class="concept-details"><li>数学の「左右が等しい」という意味ではありません。</li></ul></li>
+<li class="concept"><p><code>-=</code>、<code>*=</code>、<code>/=</code>、<code>%=</code> も同じように使えます。</p><ul class="concept-details"><li><code>score *= 2;</code> は <code>score = score * 2;</code> と同じ意味です。</li></ul></li>
+<li class="concept"><p>この書き方は、Javaの授業でも同じです。</p></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>score *= 2;</code> を <code>score -= 30;</code> に変えます。<br>
+表示の文字も「30点減点」に直してから実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="compound-try" data-kind="try" data-label="確認：代入演算子とインクリメント" data-copy-from="compound">
+
+    <div class="work">
+      <label for="editor-compound-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-compound-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>1だけ増やす・減らすときは、<code>++</code> と <code>--</code> を使うと短く書けます。</p>
+<div class="exercise" data-exercise="increment" data-kind="sample" data-label="見本：代入演算子とインクリメント（2つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> increment.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-increment">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-increment" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>count = 0
+count = 1
+count = 0
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>count++;</code> は1増やします。<br>
+これを「インクリメント」と呼びます。</p><ul class="concept-details"><li><code>count = count + 1;</code> や <code>count += 1;</code> と同じ意味です。</li></ul></li>
+<li class="concept"><p><code>count--;</code> は1減らします。<br>
+これを「デクリメント」と呼びます。</p></li>
+<li class="concept"><p>Pythonでは <code>++</code> と <code>--</code> は使えません。<br>
+CとJavaでは使えます。</p><ul class="concept-details"><li>第4回の「繰り返し」でよく使います。</li></ul></li></ul>
+<p><code>++</code> は変数の前にも後ろにも書けます。<br>
+<code>printf</code> の中で使うと、表示される値が変わります。</p>
+<div class="exercise" data-exercise="prefix" data-kind="sample" data-label="見本：代入演算子とインクリメント（3つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> prefix.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-prefix">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-prefix" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>a = 1
+a = 1
+a = 2
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>++a</code>（前置）は、先に1増やしてから、その値を使います。</p></li>
+<li class="concept"><p><code>a++</code>（後置）は、今の値を使ってから、1増やします。</p><ul class="concept-details"><li>2行目は <code>1</code> を表示した後で増えるので、3行目で <code>2</code> になります。</li></ul></li>
+<li class="concept"><p>違いが分かりにくいので、迷ったら <code>a++;</code> のように1行で使います。</p></li></ul>
+</section>
+<section id="compare" class="section"><h2>比較演算子と論理演算子</h2><p>2つの値を比べる記号を「比較演算子」と呼びます。<br>
+比べた結果は、成り立つなら <code>1</code>、成り立たないなら <code>0</code> になります。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>演算子</th>
+<th>意味</th>
+<th>例（<code>a</code> が10、<code>b</code> が5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>==</code></td>
+<td>等しい</td>
+<td><code>a == b</code> は <code>0</code></td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>等しくない</td>
+<td><code>a != b</code> は <code>1</code></td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>より大きい</td>
+<td><code>a &gt; b</code> は <code>1</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>より小さい</td>
+<td><code>a &lt; b</code> は <code>0</code></td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>以上</td>
+<td><code>a &gt;= b</code> は <code>1</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>以下</td>
+<td><code>a &lt;= b</code> は <code>0</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>等しいかを比べるときは <code>==</code> と2つ並べます。
+<ul>
+<li><code>=</code> を1つだけ書くと「代入」になり、比較になりません。</li>
+</ul>
+</li>
+<li><code>&lt;</code> <code>&gt;</code> はShiftと <code>,</code> <code>.</code> のキー、<code>!</code> はShiftと <code>1</code> です。</li>
+</ul>
+<div class="exercise" data-exercise="compare" data-kind="sample" data-label="見本：比較演算子と論理演算子">
+    <div class="sample-head"><span class="file-icon">C</span> compare.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-compare">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-compare" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>a == b : 0
+a != b : 1
+a &gt; b : 1
+a &lt; b : 0
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>1</code> は「成り立つ（真、true）」、<code>0</code> は「成り立たない（偽、false）」を表します。</p></li>
+<li class="concept"><p>比較演算子は、次回の「条件分岐」で使います。</p></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>b</code> を <code>10</code> に変えます。<br>
+4つの結果がどう変わるか、予想してから実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="compare-try" data-kind="try" data-label="確認：比較演算子と論理演算子" data-copy-from="compare">
+
+    <div class="work">
+      <label for="editor-compare-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-compare-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>複数の条件を組み合わせるときは、「論理演算子」を使います。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>演算子</th>
+<th>意味</th>
+<th>結果が <code>1</code> になるとき</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td>かつ（AND）</td>
+<td>両方とも成り立つとき</td>
+</tr>
+<tr>
+<td><code>||</code></td>
+<td>または（OR）</td>
+<td>どちらか片方でも成り立つとき</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td>ではない（NOT）</td>
+<td>条件が成り立たないとき</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><code>&amp;</code> はShiftと <code>6</code>、<code>|</code> はShiftと <code>¥</code> のキーです。</li>
+</ul>
+<div class="exercise" data-exercise="logic" data-kind="sample" data-label="見本：比較演算子と論理演算子（2つ目）">
+    <div class="sample-head"><span class="file-icon">C</span> logic.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-logic">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-logic" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>1
+0
+0
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p>1行目は「60以上、かつ100以下」です。<br>
+<code>75</code> は両方を満たすので <code>1</code> です。</p></li>
+<li class="concept"><p>2行目は「30未満、または90より大きい」です。<br>
+どちらも満たさないので <code>0</code> です。</p></li>
+<li class="concept"><p>3行目の <code>!</code> は結果を反対にします。<br>
+<code>score &gt;= 60</code> は <code>1</code> なので、<code>0</code> になります。</p></li>
+<li class="concept"><p>数学のように <code>60 &lt;= score &lt;= 100</code> とは書けません。</p><ul class="concept-details"><li><code>&amp;&amp;</code> で2つの比較に分けて書きます。</li></ul></li></ul>
+<div class="check"><b>確認</b><div class="check-body"><p><strong>下の欄にコピーして、<code>score</code> を <code>95</code> に変えます。<br>
+3つの結果を予想してから実行しましょう。</strong></p>
+</div></div><div class="exercise try-exercise" data-exercise="logic-try" data-kind="try" data-label="確認：比較演算子と論理演算子（2つ目）" data-copy-from="logic">
+
+    <div class="work">
+      <label for="editor-logic-try">上のコードをコピーしてから書き換え、実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-logic-try" aria-label="確認用のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 「上のコードをコピー」を押してから書き換えます"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="copy-btn">上のコードをコピー</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+</section>
+<section id="order" class="section"><h2>演算子の優先順位</h2><p>数学と同じく、演算子には計算する順番（優先順位）があります。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>順番</th>
+<th>演算子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>( )</code> 括弧</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>!</code>、<code>++</code>、<code>--</code>、キャスト <code>(float)</code> など</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>*</code>、<code>/</code>、<code>%</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>+</code>、<code>-</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>==</code>、<code>!=</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>&amp;&amp;</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>||</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>=</code>、<code>+=</code> などの代入</td>
+</tr>
+</tbody>
+</table></div>
+<div class="exercise" data-exercise="order" data-kind="sample" data-label="見本：演算子の優先順位">
+    <div class="sample-head"><span class="file-icon">C</span> order.c<span class="sample-tag">見ながら入力</span></div>
+       <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>
+    <div class="work">
+      <label for="editor-order">上記のサンプルコードを書き写してください：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-order" aria-label="サンプルコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// サンプルコードを見ながら、ここに入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="diff-btn">見本と比べる</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<div class="expected"><pre>7
+9
+1
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p>1行目は、先に <code>2 * 3</code> を計算します。</p></li>
+<li class="concept"><p>2行目は、括弧の中の <code>1 + 2</code> を先に計算します。</p></li>
+<li class="concept"><p>3行目は、算術、比較、論理の順に計算します。</p><ul class="concept-details"><li><code>10 + 5</code> は <code>15</code>、<code>3 * 2</code> は <code>6</code> です。</li><li><code>15 &gt; 12</code> は <code>1</code>、<code>6 == 6</code> も <code>1</code> です。</li><li>最後に <code>1 &amp;&amp; 1</code> で <code>1</code> になります。</li></ul></li>
+<li class="concept"><p>順番に迷ったら、括弧で囲むと確実です。</p></li></ul>
+</section>
+<section id="errors" class="section"><h2>エラーを直す</h2><p>誤りがあると、実行結果の欄にエラーが表示されます。</p>
+<div class="expected"><code>main.c:5:13: error: expected expression</code></div>
+<ul>
+<li><code>main.c:5:13</code> は「5行目の、左から13文字目あたり」という意味です。
+<ul>
+<li><code>error:</code> の後に、エラーの内容が英語で表示されます。<br>
+上の例は「式が必要」です。</li>
+</ul>
+</li>
+<li>誤りのある場所は、表示された行の少し前のこともあります。<br>
+前後の行も見ます。</li>
+</ul>
+<p>次のコードには、それぞれ誤りがあります。<br>
+まず実行してエラーを確かめ、直してから再実行しましょう。</p>
+<div class="exercise fix-exercise" data-exercise="fix-compound" data-kind="fix" data-label="エラーを直す（1つ目）">
+    <div class="sample-head fix-head"><span class="file-icon">C</span> score.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-compound">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-compound" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int score = 80;
+    score + = 10;
+    printf(&quot;%d\n&quot;, score);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードはエラーなく動きますが、<code>a == b</code> の結果が <code>0</code> ではなく <code>5</code> と表示されます。<br>
+正しく <code>0</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>a == b : 0</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-equal" data-kind="fix" data-label="エラーを直す（2つ目）">
+    <div class="sample-head fix-head"><span class="file-icon">C</span> equal.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-equal">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-equal" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 10;
+    int b = 5;
+
+    printf(&quot;a == b : %d\n&quot;, a = b);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードは、<code>score</code> が「60以上100以下か」を調べるつもりです。<br>
+<code>120</code> は範囲の外なので、<code>0</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>0</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-range" data-kind="fix" data-label="エラーを直す（3つ目）">
+    <div class="sample-head fix-head"><span class="file-icon">C</span> range.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-range">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-range" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int score = 120;
+
+    printf(&quot;%d\n&quot;, 60 &lt;= score &lt;= 100);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードは <code>7</code> と <code>8</code> の平均を求めますが、<code>7.500000</code> ではなく <code>7.000000</code> と表示されます。<br>
+<code>7.500000</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>平均：7.500000</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-average" data-kind="fix" data-label="エラーを直す（4つ目）">
+    <div class="sample-head fix-head"><span class="file-icon">C</span> average.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-average">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-average" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 7;
+    int b = 8;
+    float average = (a + b) / 2;
+
+    printf(&quot;平均：%f\n&quot;, average);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>1つ目：<code>+=</code> の間に空白は入れられません。<br>
+<code>score += 10;</code> と書きます。</li>
+<li>2つ目：<code>a = b</code> は代入です。<br>
+<code>b</code> の値 <code>5</code> が <code>a</code> に入り、その値が表示されます。
+<ul>
+<li>比べるときは <code>a == b</code> と書きます。</li>
+</ul>
+</li>
+<li>3つ目：<code>chained comparison 'X &lt;= Y &lt;= Z' does not behave the same as a mathematical expression</code> は「比較をつなげた式は、数学の式と同じ意味にならない」。
+<ul>
+<li><code>60 &lt;= score</code> が先に計算されて <code>1</code> になり、次に <code>1 &lt;= 100</code> が計算されるためです。</li>
+<li><code>score &gt;= 60 &amp;&amp; score &lt;= 100</code> と2つに分けて書きます。</li>
+<li>コンパイラによっては、エラーにならずに <code>1</code> と表示されることがあります。</li>
+</ul>
+</li>
+<li>4つ目：<code>(a + b) / 2</code> は整数同士の割り算なので、小数部分が切り捨てられます。
+<ul>
+<li><code>(float)(a + b) / 2</code> のように、キャストで小数の割り算にします。</li>
+</ul>
+</li>
+</ul>
+</details>
+</section>
+<section id="challenge" class="section challenge-section"><h2>演習問題</h2><div class="lesson-notice"><p><strong>※AIの使用を禁止します。<br>
+自分で考えて解答しましょう。</strong></p>
+</div>
+<h3 class="task-title">課題1 <span>四則演算と余り</span></h3>
+<p>好きな整数を変数 <code>a</code> と <code>b</code> に入れ、<code>a + b</code>、<code>a - b</code>、<code>a * b</code>、<code>a % b</code> の結果を表示してください。<br>
+<code>a</code> が10、<code>b</code> が3のときは、次のように表示されます。</p>
+<div class="expected"><pre>a + b = 13
+a - b = 7
+a * b = 30
+a % b = 1
+</pre>
+</div>
+<div class="exercise" data-exercise="task1" data-kind="task" data-label="課題1 四則演算と余り">
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task1" aria-label="課題1のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<h3 class="task-title">課題2 <span>文字コード</span></h3>
+<p>文字 <code>'z'</code> の文字コードと、文字コード <code>100</code> の文字を、次の形で表示してください。<br>
+答えの数や文字は、キャストを使ってプログラムで求めます。</p>
+<div class="expected"><pre>z = 122
+100 = d
+</pre>
+</div>
+<div class="exercise" data-exercise="task2" data-kind="task" data-label="課題2 文字コード">
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task2" aria-label="課題2のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<h3 class="task-title">課題3 <span>円の面積</span></h3>
+<p>円周率を <code>float pi = 3.14;</code>、半径を <code>float r = 5.0;</code> として、円の面積を小数点以下2桁まで表示してください。</p>
+<div class="expected"><code>78.50</code></div>
+<div class="exercise" data-exercise="task3" data-kind="task" data-label="課題3 円の面積">
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-task3" aria-label="課題3のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>課題1：余りの行は <code>printf(&quot;a %% b = %d\n&quot;, a % b);</code> のように、<code>%%</code> で <code>%</code> を表示します。</li>
+<li>課題2：見本の <code>char_code.c</code> と同じく、<code>(int)</code> と <code>(char)</code> でキャストします。</li>
+<li>課題3：円の面積は「円周率 × 半径 × 半径」です。<br>
+<code>%.2f</code> で小数点以下2桁まで表示します。</li>
+</ul>
+</details>
+</section>
+<section id="extension" class="section challenge-section"><h2>発展課題（余裕がある人のみ）</h2><p>演習問題が終わった人だけ取り組みます。</p>
+<h3 class="task-title">発展1 <span>秒を時間・分・秒に換算</span></h3>
+<p><code>10000</code> 秒が何時間何分何秒かを計算し、次の形で表示してください。</p>
+<div class="expected"><code>2時間46分40秒</code></div>
+<div class="exercise" data-exercise="ext1" data-kind="task" data-label="発展1 秒を時間・分・秒に換算" data-bonus>
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-ext1" aria-label="発展1のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>1時間は <code>3600</code> 秒、1分は <code>60</code> 秒です。</li>
+<li><code>10000 / 3600</code> で時間、<code>10000 % 3600</code> で残りの秒数が求まります。</li>
+<li>残りの秒数を、さらに <code>/ 60</code> と <code>% 60</code> で分と秒に分けます。</li>
+</ul>
+</details>
+<h3 class="task-title">発展2 <span>時給の計算</span></h3>
+<p>時給 <code>1046</code> 円で、1日8時間、週5日、4週間働いたときの賃金の合計を計算し、次の形で表示してください。</p>
+<div class="expected"><code>167360円</code></div>
+<div class="exercise" data-exercise="ext2" data-kind="task" data-label="発展2 時給の計算" data-bonus>
+
+    <div class="work">
+
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-ext2" aria-label="発展2のコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>1日・1週間・4週間の順に、掛け算で求めます。</li>
+<li>変数に入れてから計算すると、式が読みやすくなります。</li>
+</ul>
+</details>
+</section>
+<section id="summary" class="section summary"><h2>今日のまとめ</h2><ul>
+<li><code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>%</code> で計算する。<br>
+<code>int</code> 同士の <code>/</code> は小数部分を切り捨てる。</li>
+<li><code>(float)</code> などのキャストで型を変える。<br>
+文字と文字コードも変換できる。</li>
+<li><code>+=</code> などの代入演算子や、<code>++</code>・<code>--</code> で変数の値を変える。</li>
+<li>比較演算子の結果は <code>1</code> か <code>0</code>。<br>
+<code>&amp;&amp;</code>・<code>||</code>・<code>!</code> で条件を組み合わせる。</li>
+<li>計算の順番に迷ったら、括弧で囲む。</li>
+</ul>
+<p>次回は、比較演算子と論理演算子を使って「条件分岐」を学びます。</p>
+</section>
+          <section id="save" class="section submission">
+            <h2>Moodle提出用ファイル保存</h2>
+            <div id="progress" class="progress-panel" aria-live="polite"></div>
+            <form id="export-form">
+              <div class="identity-fields">
+                <label for="attendance-number">
+                  出席番号
+                  <input
+                    id="attendance-number"
+                    name="attendance-number"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+                <label for="student-name">
+                  氏名
+                  <input
+                    id="student-name"
+                    name="student-name"
+                    type="text"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+              </div>
+              <ul class="export-note">
+                <li>出席番号と氏名を入力し、「保存」ボタンを押してください。</li>
+                <li>保存したファイルを、Moodleに提出してください。</li>
+              </ul>
+              <button type="submit" class="export-btn">
+                保存
+              </button>
+              <p
+                id="export-status"
+                class="export-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
+          </section>
+          <footer class="page-footer">
+            計算機基礎演習 <span>後期 第2回 / 演算子</span>
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

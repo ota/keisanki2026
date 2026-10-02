@@ -362,3 +362,16 @@ test("generated pages open and close every div", () => {
   const closed = html.match(/<\/div>/g).length;
   assert.equal(opened, closed);
 });
+
+test("every lesson renders with balanced divs and keeps its progress setting", async () => {
+  const dir = new URL("../content/", import.meta.url);
+  const names = (await readdir(dir)).filter((name) => /^lesson\d+\.md$/.test(name));
+  assert.ok(names.includes("lesson02.md"));
+  for (const name of names) {
+    const source = await readFile(new URL(name, dir), "utf8");
+    const { html } = renderLesson(source, template, name);
+    assert.equal(html.match(/<div\b/g).length, html.match(/<\/div>/g).length, name);
+    const off = /^progress: off$/m.test(source.replace(/\r/g, ""));
+    assert.match(html, off ? /data-progress="off"/ : /data-progress="on"/, name);
+  }
+});

@@ -46,7 +46,7 @@ npm run edit
 
 ## Markdownで講義を編集する
 
-第1回の本文は [`content/lesson01.md`](content/lesson01.md) にあります。`index.html`、`lesson01.html`、`src/generated/lesson01-samples.js` は生成物なので直接編集せず、Markdownを変更してください。`npm run dev` では保存時に自動生成され、`npm run build` でもビルド前に生成されます。手動で生成する場合は `npm run generate` を実行します。
+第1回の本文は [`content/lesson01.md`](content/lesson01.md)、第2回は [`content/lesson02.md`](content/lesson02.md) にあります。`index.html`、`lesson01.html`、`src/generated/lesson01-samples.js` は生成物なので直接編集せず、Markdownを変更してください。`npm run dev` では保存時に自動生成され、`npm run build` でもビルド前に生成されます。手動で生成する場合は `npm run generate` を実行します。
 
 - `## 見出し {#id}` が本文の区切りと左側の目次になります。段落、箇条書き、リンク、表、インラインコードは通常のMarkdownで書けます。
 - `:::exercise first hello.c` の中に `c` のコードフェンスを書くと、コピーできない見本画像、入力欄、実行ボタンを生成します。コードフェンスなしの `:::exercise task1` は自分で考える演習用です。IDはページ内で重複させないでください。
