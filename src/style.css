@@ -374,6 +374,15 @@ h1 {
   color: #fff;
   font-weight: 500;
 }
+.given-head {
+  background: #263c4a;
+}
+.given-head .file-icon {
+  background: #3d7896;
+}
+.given-head .sample-tag {
+  color: #bcd6e4;
+}
 .fix-head {
   background: #5a2f2b;
 }

@@ -21,9 +21,11 @@ footer: 後期 第2回 / 演算子
   - 打ち終えたら「見本と比べる」で、見本と違うところを確かめられます。
 - 「実行する」を押し、表示された結果を確かめます。
   - 条件を満たすと「✅ 合格」と表示されます。
+- 「前回のおさらい」の欄には、コードが最初から入っています。
+  - 読んで確かめてから「実行する」を押します。
 - 「確認」の下の欄では、「上のコードをコピー」で自分の入力を写してから書き換えます。
   - 写経した上の欄のコードは、そのまま残ります。
-- 「エラーを直す」の欄には、誤りを含むコードが最初から入っています。
+- 発展課題の「エラーを直す」の欄には、誤りを含むコードが最初から入っています。
   - 実行してエラーを確かめ、直してから再実行します。
   - 分からなくなったら「最初のコードに戻す」を2回押すと、最初のコードに戻ります。
 - 入力内容はパソコンに自動的に保存されます。
@@ -38,9 +40,23 @@ footer: 後期 第2回 / 演算子
   - 整数は `%d`、小数は `%f`、文字は `%c`、文字列は `%s` です。
 - `\n` は改行です。`\` は、キーボードの `¥` のキーで入力します。
 
-まずは見本を見ずに、プログラムを書いてみましょう。
-整数の変数 `number` に `99`、小数の変数 `pi` に `3.14` を入れて、次のように表示します。
-思い出せないときは、[第1回の「変数」](./lesson01.html#variable)を見て確かめます。
+次のコードは、前回の内容を使っています。
+コードを読んで、何が表示されるか予想してから実行しましょう。
+
+:::exercise warmup review.c given
+```c
+#include <stdio.h>
+
+int main(void) {
+    int number = 99;
+    float pi = 3.14;
+
+    printf("%d\n", number);
+    printf("%f\n", pi);
+    return 0;
+}
+```
+:::
 
 :::expected warmup
 ```
@@ -49,7 +65,10 @@ footer: 後期 第2回 / 演算子
 ```
 :::
 
-:::exercise warmup
+:::concepts
+- `%f` は小数点以下を6桁表示するので、`3.14` は `3.140000` と表示されます。
+  - 桁数を決める方法は、この後の「算術演算子」で学びます。
+- 分からないところは、[第1回の「変数」](./lesson01.html#variable)で確かめます。
 :::
 
 ## 算術演算子 {#arithmetic}
@@ -506,108 +525,6 @@ int main(void) {
 - 順番に迷ったら、括弧で囲むと確実です。
 :::
 
-## エラーを直す {#errors}
-
-誤りがあると、実行結果の欄にエラーが表示されます。
-
-:::expected
-main.c:5:13: error: expected expression
-:::
-
-- `main.c:5:13` は「5行目の、左から13文字目あたり」という意味です。
-  - `error:` の後に、エラーの内容が英語で表示されます。上の例は「式が必要」です。
-- 誤りのある場所は、表示された行の少し前のこともあります。前後の行も見ます。
-
-次のコードには、それぞれ誤りがあります。まず実行してエラーを確かめ、直してから再実行しましょう。
-
-:::exercise fix-compound score.c fix
-```c
-#include <stdio.h>
-
-int main(void) {
-    int score = 80;
-    score + = 10;
-    printf("%d\n", score);
-    return 0;
-}
-```
-:::
-
-次のコードはエラーなく動きますが、`a == b` の結果が `0` ではなく `5` と表示されます。
-正しく `0` と表示されるように直しましょう。
-
-:::expected fix-equal
-a == b : 0
-:::
-
-:::exercise fix-equal equal.c fix
-```c
-#include <stdio.h>
-
-int main(void) {
-    int a = 10;
-    int b = 5;
-
-    printf("a == b : %d\n", a = b);
-    return 0;
-}
-```
-:::
-
-次のコードは、`score` が「60以上100以下か」を調べるつもりです。
-`120` は範囲の外なので、`0` と表示されるように直しましょう。
-
-:::expected fix-range
-0
-:::
-
-:::exercise fix-range range.c fix
-```c
-#include <stdio.h>
-
-int main(void) {
-    int score = 120;
-
-    printf("%d\n", 60 <= score <= 100);
-    return 0;
-}
-```
-:::
-
-次のコードは `7` と `8` の平均を求めますが、`7.500000` ではなく `7.000000` と表示されます。
-`7.500000` と表示されるように直しましょう。
-
-:::expected fix-average
-平均：7.500000
-:::
-
-:::exercise fix-average average.c fix
-```c
-#include <stdio.h>
-
-int main(void) {
-    int a = 7;
-    int b = 8;
-    float average = (a + b) / 2;
-
-    printf("平均：%f\n", average);
-    return 0;
-}
-```
-:::
-
-:::hint
-- 1つ目：`+=` の間に空白は入れられません。`score += 10;` と書きます。
-- 2つ目：`a = b` は代入です。`b` の値 `5` が `a` に入り、その値が表示されます。
-  - 比べるときは `a == b` と書きます。
-- 3つ目：`chained comparison 'X <= Y <= Z' does not behave the same as a mathematical expression` は「比較をつなげた式は、数学の式と同じ意味にならない」。
-  - `60 <= score` が先に計算されて `1` になり、次に `1 <= 100` が計算されるためです。
-  - `score >= 60 && score <= 100` と2つに分けて書きます。
-  - コンパイラによっては、エラーにならずに `1` と表示されることがあります。
-- 4つ目：`(a + b) / 2` は整数同士の割り算なので、小数部分が切り捨てられます。
-  - `(float)(a + b) / 2` のように、キャストで小数の割り算にします。
-:::
-
 ## 演習問題 {#challenge}
 
 :::notice
@@ -698,6 +615,109 @@ z = 122
 :::hint
 - 1日・1週間・4週間の順に、掛け算で求めます。
 - 変数に入れてから計算すると、式が読みやすくなります。
+:::
+
+### 発展3　エラーを直す
+
+誤りがあると、実行結果の欄にエラーが表示されます。
+
+:::expected
+main.c:5:13: error: expected expression
+:::
+
+- `main.c:5:13` は「5行目の、左から13文字目あたり」という意味です。
+  - `error:` の後に、エラーの内容が英語で表示されます。上の例は「式が必要」です。
+- 誤りのある場所は、表示された行の少し前のこともあります。前後の行も見ます。
+
+次のコードには、それぞれ誤りがあります。
+まず実行してエラーを確かめ、直してから再実行しましょう。
+
+:::exercise fix-compound score.c fix
+```c
+#include <stdio.h>
+
+int main(void) {
+    int score = 80;
+    score + = 10;
+    printf("%d\n", score);
+    return 0;
+}
+```
+:::
+
+次のコードはエラーなく動きますが、`a == b` の結果が `0` ではなく `5` と表示されます。
+正しく `0` と表示されるように直しましょう。
+
+:::expected fix-equal
+a == b : 0
+:::
+
+:::exercise fix-equal equal.c fix
+```c
+#include <stdio.h>
+
+int main(void) {
+    int a = 10;
+    int b = 5;
+
+    printf("a == b : %d\n", a = b);
+    return 0;
+}
+```
+:::
+
+次のコードは、`score` が「60以上100以下か」を調べるつもりです。
+`120` は範囲の外なので、`0` と表示されるように直しましょう。
+
+:::expected fix-range
+0
+:::
+
+:::exercise fix-range range.c fix
+```c
+#include <stdio.h>
+
+int main(void) {
+    int score = 120;
+
+    printf("%d\n", 60 <= score <= 100);
+    return 0;
+}
+```
+:::
+
+次のコードは `7` と `8` の平均を求めますが、`7.500000` ではなく `7.000000` と表示されます。
+`7.500000` と表示されるように直しましょう。
+
+:::expected fix-average
+平均：7.500000
+:::
+
+:::exercise fix-average average.c fix
+```c
+#include <stdio.h>
+
+int main(void) {
+    int a = 7;
+    int b = 8;
+    float average = (a + b) / 2;
+
+    printf("平均：%f\n", average);
+    return 0;
+}
+```
+:::
+
+:::hint
+- 1つ目：`+=` の間に空白は入れられません。`score += 10;` と書きます。
+- 2つ目：`a = b` は代入です。`b` の値 `5` が `a` に入り、その値が表示されます。
+  - 比べるときは `a == b` と書きます。
+- 3つ目：`chained comparison 'X <= Y <= Z' does not behave the same as a mathematical expression` は「比較をつなげた式は、数学の式と同じ意味にならない」。
+  - `60 <= score` が先に計算されて `1` になり、次に `1 <= 100` が計算されるためです。
+  - `score >= 60 && score <= 100` と2つに分けて書きます。
+  - コンパイラによっては、エラーにならずに `1` と表示されることがあります。
+- 4つ目：`(a + b) / 2` は整数同士の割り算なので、小数部分が切り捨てられます。
+  - `(float)(a + b) / 2` のように、キャストで小数の割り算にします。
 :::
 
 ## 今日のまとめ {#summary}

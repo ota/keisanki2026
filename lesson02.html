@@ -25,7 +25,7 @@
           ><span>02</span>第2回　演算子</a
         >
         <div class="side-label side-sections">今回の内容</div>
-        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#review">前回のおさらい</a><a href="#arithmetic">算術演算子</a><a href="#cast">キャスト演算子</a><a href="#assign">代入演算子とインクリメント</a><a href="#compare">比較演算子と論理演算子</a><a href="#order">演算子の優先順位</a><a href="#errors">エラーを直す</a><a href="#challenge">演習問題</a><a href="#extension">発展課題（余裕がある人のみ）</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
+        <nav class="side-nav" aria-label="今回の内容"><a href="#goals">今回の目標</a><a href="#review">前回のおさらい</a><a href="#arithmetic">算術演算子</a><a href="#cast">キャスト演算子</a><a href="#assign">代入演算子とインクリメント</a><a href="#compare">比較演算子と論理演算子</a><a href="#order">演算子の優先順位</a><a href="#challenge">演習問題</a><a href="#extension">発展課題（余裕がある人のみ）</a><a href="#summary">今日のまとめ</a><a href="#save">保存</a></nav>
       </aside>
       <main id="top" class="main">
         <header class="topbar">
@@ -46,12 +46,17 @@
 <li>条件を満たすと「✅ 合格」と表示されます。</li>
 </ul>
 </li>
+<li>「前回のおさらい」の欄には、コードが最初から入っています。
+<ul>
+<li>読んで確かめてから「実行する」を押します。</li>
+</ul>
+</li>
 <li>「確認」の下の欄では、「上のコードをコピー」で自分の入力を写してから書き換えます。
 <ul>
 <li>写経した上の欄のコードは、そのまま残ります。</li>
 </ul>
 </li>
-<li>「エラーを直す」の欄には、誤りを含むコードが最初から入っています。
+<li>発展課題の「エラーを直す」の欄には、誤りを含むコードが最初から入っています。
 <ul>
 <li>実行してエラーを確かめ、直してから再実行します。</li>
 <li>分からなくなったら「最初のコードに戻す」を2回押すと、最初のコードに戻ります。</li>
@@ -76,26 +81,36 @@
 <li><code>\n</code> は改行です。<br>
 <code>\</code> は、キーボードの <code>¥</code> のキーで入力します。</li>
 </ul>
-<p>まずは見本を見ずに、プログラムを書いてみましょう。<br>
-整数の変数 <code>number</code> に <code>99</code>、小数の変数 <code>pi</code> に <code>3.14</code> を入れて、次のように表示します。<br>
-思い出せないときは、<a href="./lesson01.html#variable">第1回の「変数」</a>を見て確かめます。</p>
-<div class="expected"><pre>99
-3.140000
-</pre>
-</div>
-<div class="exercise" data-exercise="warmup" data-kind="task" data-label="課題：前回のおさらい">
-
+<p>次のコードは、前回の内容を使っています。<br>
+コードを読んで、何が表示されるか予想してから実行しましょう。</p>
+<div class="exercise" data-exercise="warmup" data-kind="given" data-label="おさらい：前回のおさらい">
+    <div class="sample-head given-head"><span class="file-icon">C</span> review.c<span class="sample-tag">確認して実行</span></div>
     <div class="work">
-
+      <label for="editor-warmup">コードを読んで確かめてから、実行しましょう：</label>
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-warmup" aria-label="warmupのコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力"></textarea>
+        <textarea id="editor-warmup" aria-label="確認して実行するコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int number = 99;
+    float pi = 3.14;
+
+    printf(&quot;%d\n&quot;, number);
+    printf(&quot;%f\n&quot;, pi);
+    return 0;
+}</textarea>
       </div>
       <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>
   </div>
+<div class="expected"><pre>99
+3.140000
+</pre>
+</div>
+<ul class="concepts"><li class="concept"><p><code>%f</code> は小数点以下を6桁表示するので、<code>3.14</code> は <code>3.140000</code> と表示されます。</p><ul class="concept-details"><li>桁数を決める方法は、この後の「算術演算子」で学びます。</li></ul></li>
+<li class="concept"><p>分からないところは、<a href="./lesson01.html#variable">第1回の「変数」</a>で確かめます。</p></li></ul>
 </section>
 <section id="arithmetic" class="section"><h2>算術演算子</h2><p><code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>%</code> は計算に使う記号で、「算術演算子」と呼びます。<br>
 掛け算は <code>×</code> ではなく <code>*</code>、割り算は <code>÷</code> ではなく <code>/</code> と書きます。</p>
@@ -634,136 +649,6 @@ a &lt; b : 0
 <li class="concept"><p>3行目は、算術、比較、論理の順に計算します。</p><ul class="concept-details"><li><code>10 + 5</code> は <code>15</code>、<code>3 * 2</code> は <code>6</code> です。</li><li><code>15 &gt; 12</code> は <code>1</code>、<code>6 == 6</code> も <code>1</code> です。</li><li>最後に <code>1 &amp;&amp; 1</code> で <code>1</code> になります。</li></ul></li>
 <li class="concept"><p>順番に迷ったら、括弧で囲むと確実です。</p></li></ul>
 </section>
-<section id="errors" class="section"><h2>エラーを直す</h2><p>誤りがあると、実行結果の欄にエラーが表示されます。</p>
-<div class="expected"><code>main.c:5:13: error: expected expression</code></div>
-<ul>
-<li><code>main.c:5:13</code> は「5行目の、左から13文字目あたり」という意味です。
-<ul>
-<li><code>error:</code> の後に、エラーの内容が英語で表示されます。<br>
-上の例は「式が必要」です。</li>
-</ul>
-</li>
-<li>誤りのある場所は、表示された行の少し前のこともあります。<br>
-前後の行も見ます。</li>
-</ul>
-<p>次のコードには、それぞれ誤りがあります。<br>
-まず実行してエラーを確かめ、直してから再実行しましょう。</p>
-<div class="exercise fix-exercise" data-exercise="fix-compound" data-kind="fix" data-label="エラーを直す（1つ目）">
-    <div class="sample-head fix-head"><span class="file-icon">C</span> score.c<span class="sample-tag">エラーを直す</span></div>
-    <div class="work">
-      <label for="editor-fix-compound">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
-      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-fix-compound" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
-
-int main(void) {
-    int score = 80;
-    score + = 10;
-    printf(&quot;%d\n&quot;, score);
-    return 0;
-}</textarea>
-      </div>
-      <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
-      <div class="status" role="status" aria-live="polite"></div>
-      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
-    </div>
-  </div>
-<p>次のコードはエラーなく動きますが、<code>a == b</code> の結果が <code>0</code> ではなく <code>5</code> と表示されます。<br>
-正しく <code>0</code> と表示されるように直しましょう。</p>
-<div class="expected"><code>a == b : 0</code></div>
-<div class="exercise fix-exercise" data-exercise="fix-equal" data-kind="fix" data-label="エラーを直す（2つ目）">
-    <div class="sample-head fix-head"><span class="file-icon">C</span> equal.c<span class="sample-tag">エラーを直す</span></div>
-    <div class="work">
-      <label for="editor-fix-equal">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
-      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-fix-equal" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
-
-int main(void) {
-    int a = 10;
-    int b = 5;
-
-    printf(&quot;a == b : %d\n&quot;, a = b);
-    return 0;
-}</textarea>
-      </div>
-      <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
-      <div class="status" role="status" aria-live="polite"></div>
-      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
-    </div>
-  </div>
-<p>次のコードは、<code>score</code> が「60以上100以下か」を調べるつもりです。<br>
-<code>120</code> は範囲の外なので、<code>0</code> と表示されるように直しましょう。</p>
-<div class="expected"><code>0</code></div>
-<div class="exercise fix-exercise" data-exercise="fix-range" data-kind="fix" data-label="エラーを直す（3つ目）">
-    <div class="sample-head fix-head"><span class="file-icon">C</span> range.c<span class="sample-tag">エラーを直す</span></div>
-    <div class="work">
-      <label for="editor-fix-range">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
-      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-fix-range" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
-
-int main(void) {
-    int score = 120;
-
-    printf(&quot;%d\n&quot;, 60 &lt;= score &lt;= 100);
-    return 0;
-}</textarea>
-      </div>
-      <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
-      <div class="status" role="status" aria-live="polite"></div>
-      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
-    </div>
-  </div>
-<p>次のコードは <code>7</code> と <code>8</code> の平均を求めますが、<code>7.500000</code> ではなく <code>7.000000</code> と表示されます。<br>
-<code>7.500000</code> と表示されるように直しましょう。</p>
-<div class="expected"><code>平均：7.500000</code></div>
-<div class="exercise fix-exercise" data-exercise="fix-average" data-kind="fix" data-label="エラーを直す（4つ目）">
-    <div class="sample-head fix-head"><span class="file-icon">C</span> average.c<span class="sample-tag">エラーを直す</span></div>
-    <div class="work">
-      <label for="editor-fix-average">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
-      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-fix-average" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
-
-int main(void) {
-    int a = 7;
-    int b = 8;
-    float average = (a + b) / 2;
-
-    printf(&quot;平均：%f\n&quot;, average);
-    return 0;
-}</textarea>
-      </div>
-      <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
-      <div class="status" role="status" aria-live="polite"></div>
-      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
-    </div>
-  </div>
-<details class="hint"><summary>ヒント</summary><ul>
-<li>1つ目：<code>+=</code> の間に空白は入れられません。<br>
-<code>score += 10;</code> と書きます。</li>
-<li>2つ目：<code>a = b</code> は代入です。<br>
-<code>b</code> の値 <code>5</code> が <code>a</code> に入り、その値が表示されます。
-<ul>
-<li>比べるときは <code>a == b</code> と書きます。</li>
-</ul>
-</li>
-<li>3つ目：<code>chained comparison 'X &lt;= Y &lt;= Z' does not behave the same as a mathematical expression</code> は「比較をつなげた式は、数学の式と同じ意味にならない」。
-<ul>
-<li><code>60 &lt;= score</code> が先に計算されて <code>1</code> になり、次に <code>1 &lt;= 100</code> が計算されるためです。</li>
-<li><code>score &gt;= 60 &amp;&amp; score &lt;= 100</code> と2つに分けて書きます。</li>
-<li>コンパイラによっては、エラーにならずに <code>1</code> と表示されることがあります。</li>
-</ul>
-</li>
-<li>4つ目：<code>(a + b) / 2</code> は整数同士の割り算なので、小数部分が切り捨てられます。
-<ul>
-<li><code>(float)(a + b) / 2</code> のように、キャストで小数の割り算にします。</li>
-</ul>
-</li>
-</ul>
-</details>
-</section>
 <section id="challenge" class="section challenge-section"><h2>演習問題</h2><div class="lesson-notice"><p><strong>※AIの使用を禁止します。<br>
 自分で考えて解答しましょう。</strong></p>
 </div>
@@ -875,6 +760,136 @@ a % b = 1
 <details class="hint"><summary>ヒント</summary><ul>
 <li>1日・1週間・4週間の順に、掛け算で求めます。</li>
 <li>変数に入れてから計算すると、式が読みやすくなります。</li>
+</ul>
+</details>
+<h3 class="task-title">発展3 <span>エラーを直す</span></h3>
+<p>誤りがあると、実行結果の欄にエラーが表示されます。</p>
+<div class="expected"><code>main.c:5:13: error: expected expression</code></div>
+<ul>
+<li><code>main.c:5:13</code> は「5行目の、左から13文字目あたり」という意味です。
+<ul>
+<li><code>error:</code> の後に、エラーの内容が英語で表示されます。<br>
+上の例は「式が必要」です。</li>
+</ul>
+</li>
+<li>誤りのある場所は、表示された行の少し前のこともあります。<br>
+前後の行も見ます。</li>
+</ul>
+<p>次のコードには、それぞれ誤りがあります。<br>
+まず実行してエラーを確かめ、直してから再実行しましょう。</p>
+<div class="exercise fix-exercise" data-exercise="fix-compound" data-kind="fix" data-label="発展3 エラーを直す" data-bonus>
+    <div class="sample-head fix-head"><span class="file-icon">C</span> score.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-compound">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-compound" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int score = 80;
+    score + = 10;
+    printf(&quot;%d\n&quot;, score);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードはエラーなく動きますが、<code>a == b</code> の結果が <code>0</code> ではなく <code>5</code> と表示されます。<br>
+正しく <code>0</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>a == b : 0</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-equal" data-kind="fix" data-label="発展3 エラーを直す" data-bonus>
+    <div class="sample-head fix-head"><span class="file-icon">C</span> equal.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-equal">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-equal" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 10;
+    int b = 5;
+
+    printf(&quot;a == b : %d\n&quot;, a = b);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードは、<code>score</code> が「60以上100以下か」を調べるつもりです。<br>
+<code>120</code> は範囲の外なので、<code>0</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>0</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-range" data-kind="fix" data-label="発展3 エラーを直す" data-bonus>
+    <div class="sample-head fix-head"><span class="file-icon">C</span> range.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-range">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-range" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int score = 120;
+
+    printf(&quot;%d\n&quot;, 60 &lt;= score &lt;= 100);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<p>次のコードは <code>7</code> と <code>8</code> の平均を求めますが、<code>7.500000</code> ではなく <code>7.000000</code> と表示されます。<br>
+<code>7.500000</code> と表示されるように直しましょう。</p>
+<div class="expected"><code>平均：7.500000</code></div>
+<div class="exercise fix-exercise" data-exercise="fix-average" data-kind="fix" data-label="発展3 エラーを直す" data-bonus>
+    <div class="sample-head fix-head"><span class="file-icon">C</span> average.c<span class="sample-tag">エラーを直す</span></div>
+    <div class="work">
+      <label for="editor-fix-average">まず実行してエラーを確かめ、直してから再実行しましょう：</label>
+      <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
+        <textarea id="editor-fix-average" aria-label="直すコード" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="// 自分で考えて入力">#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 7;
+    int b = 8;
+    float average = (a + b) / 2;
+
+    printf(&quot;平均：%f\n&quot;, average);
+    return 0;
+}</textarea>
+      </div>
+      <div class="pass-note" hidden></div>
+      <div class="work-footer"><div class="buttons"><button type="button" class="reset-btn">最初のコードに戻す</button><button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="status" role="status" aria-live="polite"></div>
+      <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
+    </div>
+  </div>
+<details class="hint"><summary>ヒント</summary><ul>
+<li>1つ目：<code>+=</code> の間に空白は入れられません。<br>
+<code>score += 10;</code> と書きます。</li>
+<li>2つ目：<code>a = b</code> は代入です。<br>
+<code>b</code> の値 <code>5</code> が <code>a</code> に入り、その値が表示されます。
+<ul>
+<li>比べるときは <code>a == b</code> と書きます。</li>
+</ul>
+</li>
+<li>3つ目：<code>chained comparison 'X &lt;= Y &lt;= Z' does not behave the same as a mathematical expression</code> は「比較をつなげた式は、数学の式と同じ意味にならない」。
+<ul>
+<li><code>60 &lt;= score</code> が先に計算されて <code>1</code> になり、次に <code>1 &lt;= 100</code> が計算されるためです。</li>
+<li><code>score &gt;= 60 &amp;&amp; score &lt;= 100</code> と2つに分けて書きます。</li>
+<li>コンパイラによっては、エラーにならずに <code>1</code> と表示されることがあります。</li>
+</ul>
+</li>
+<li>4つ目：<code>(a + b) / 2</code> は整数同士の割り算なので、小数部分が切り捨てられます。
+<ul>
+<li><code>(float)(a + b) / 2</code> のように、キャストで小数の割り算にします。</li>
+</ul>
+</li>
 </ul>
 </details>
 </section>

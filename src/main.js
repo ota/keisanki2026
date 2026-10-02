@@ -248,6 +248,7 @@ for (const exercise of document.querySelectorAll(".exercise")) {
   };
   const passText = {
     sample: "見本と同じコードで、正しく実行できました。",
+    given: "コードを確かめて、実行できました。",
     fix: "エラーを直せました。",
     try: "書き換えて実行できました。",
     task: expected === undefined ? "エラーなく実行できました。" : "出力例と同じ結果です。",

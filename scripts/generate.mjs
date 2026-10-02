@@ -143,9 +143,11 @@ function splitSections(body, path, offset = 0) {
 function exerciseHtml(argument, body, samples, usedIds, path, context, { copyFrom } = {}) {
   // "fix" puts code with deliberate errors into the input for students to repair.
   const [id, filename, mode] = argument.split(/\s+/);
-  if (mode && mode !== "fix")
+  // "given" puts working code into the input; students read it and run it.
+  if (mode && mode !== "fix" && mode !== "given")
     throw new Error(`${path}: ${id} の指定が不正です: ${mode}`);
   const fix = mode === "fix";
+  const given = mode === "given";
   if (!/^[a-z][a-z0-9-]*$/.test(id || ""))
     throw new Error(`${path}: 演習IDが不正です: ${id}`);
   if (usedIds.has(id))
@@ -160,7 +162,7 @@ function exerciseHtml(argument, body, samples, usedIds, path, context, { copyFro
       throw new Error(
         `${path}: ${id} の見本はCコードフェンスとファイル名が必要です`,
       );
-    if (fix) initial = code[1];
+    if (fix || given) initial = code[1];
     else {
       sample = code[1];
       samples[id] = sample.split("\n");
@@ -169,16 +171,24 @@ function exerciseHtml(argument, body, samples, usedIds, path, context, { copyFro
       "code",
       code[1],
       context.start + body.length - body.trimStart().length + 5,
-      { exercise: id, filename, ...(fix && { fix: true }) },
+      { exercise: id, filename, ...(fix && { fix: true }), ...(given && { prefilled: true }) },
     );
-  } else if (fix) {
-    throw new Error(`${path}: ${id} の直すコードがありません`);
+  } else if (fix || given) {
+    throw new Error(`${path}: ${id} の${fix ? "直す" : "実行する"}コードがありません`);
   } else if (filename) {
     throw new Error(`${path}: ${id} の見本コードがありません`);
   }
   const safeId = escapeHtml(id);
   // Kind, a readable name and whether it is optional drive the progress panel.
-  const kind = sample ? "sample" : fix ? "fix" : copyFrom ? "try" : "task";
+  const kind = sample
+    ? "sample"
+    : fix
+      ? "fix"
+      : given
+        ? "given"
+        : copyFrom
+          ? "try"
+          : "task";
   const lesson = context.lesson;
   const section = context.section ?? { id: "", title: "" };
   const count = `${section.id}:${kind}`;
@@ -189,13 +199,15 @@ function exerciseHtml(argument, body, samples, usedIds, path, context, { copyFro
     ? context.heading.replace(/\s+/, " ")
     : kind === "fix"
       ? `エラーを直す（${nth}つ目）`
-      : `${{ sample: "見本", try: "確認", task: "課題" }[kind]}：${section.title}${nthText}`;
+      : `${{ sample: "見本", given: "おさらい", try: "確認", task: "課題" }[kind]}：${section.title}${nthText}`;
   const bonus = section.id === "extension";
   const label = sample
     ? "上記のサンプルコードを書き写してください："
     : fix
       ? "まず実行してエラーを確かめ、直してから再実行しましょう："
-      : copyFrom
+      : given
+        ? "コードを読んで確かめてから、実行しましょう："
+        : copyFrom
         ? "上のコードをコピーしてから書き換え、実行しましょう："
         : "";
   const sampleHtml = sample
@@ -203,16 +215,18 @@ function exerciseHtml(argument, body, samples, usedIds, path, context, { copyFro
        <div class="sample-scroll"><canvas class="sample-canvas" aria-label="書き写すためのCコードサンプル。文字は選択できません。"></canvas></div>`
     : fix
       ? `<div class="sample-head fix-head"><span class="file-icon">C</span> ${escapeHtml(filename)}${codeField ? `<button type="button" class="author-code-button" data-author-code="${codeField.key}">直すコードを編集</button>` : '<span class="sample-tag">エラーを直す</span>'}</div>`
-      : "";
+      : given
+        ? `<div class="sample-head given-head"><span class="file-icon">C</span> ${escapeHtml(filename)}${codeField ? `<button type="button" class="author-code-button" data-author-code="${codeField.key}">コードを編集</button>` : '<span class="sample-tag">確認して実行</span>'}</div>`
+        : "";
   return `<div class="exercise${fix ? " fix-exercise" : ""}${copyFrom ? " try-exercise" : ""}" data-exercise="${safeId}" data-kind="${kind}" data-label="${escapeHtml(title)}"${bonus ? " data-bonus" : ""}${copyFrom ? ` data-copy-from="${escapeHtml(copyFrom)}"` : ""}>
     ${sampleHtml}
     <div class="work">
       ${label ? `<label for="editor-${safeId}">${label}</label>` : ""}
       <div class="editor-wrap"><div class="gutter" aria-hidden="true"></div>
-        <textarea id="editor-${safeId}" aria-label="${sample ? "サンプルコード" : fix ? "直すコード" : copyFrom ? "確認用のコード" : escapeHtml(id.replace(/^task(\d+)$/, "課題$1").replace(/^ext(\d+)$/, "発展$1")) + "のコード"}" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="${sample ? "// サンプルコードを見ながら、ここに入力" : copyFrom ? "// 「上のコードをコピー」を押してから書き換えます" : "// 自分で考えて入力"}">${escapeHtml(initial)}</textarea>
+        <textarea id="editor-${safeId}" aria-label="${sample ? "サンプルコード" : fix ? "直すコード" : given ? "確認して実行するコード" : copyFrom ? "確認用のコード" : escapeHtml(id.replace(/^task(\d+)$/, "課題$1").replace(/^ext(\d+)$/, "発展$1")) + "のコード"}" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="${sample ? "// サンプルコードを見ながら、ここに入力" : copyFrom ? "// 「上のコードをコピー」を押してから書き換えます" : "// 自分で考えて入力"}">${escapeHtml(initial)}</textarea>
       </div>
       <div class="pass-note" hidden></div>
-      <div class="work-footer"><div class="buttons">${sample ? '<button type="button" class="diff-btn">見本と比べる</button>' : ""}${fix ? '<button type="button" class="reset-btn">最初のコードに戻す</button>' : ""}${copyFrom ? '<button type="button" class="copy-btn">上のコードをコピー</button>' : ""}<button type="button" class="run-btn">▶ 実行する</button></div></div>
+      <div class="work-footer"><div class="buttons">${sample ? '<button type="button" class="diff-btn">見本と比べる</button>' : ""}${fix || given ? '<button type="button" class="reset-btn">最初のコードに戻す</button>' : ""}${copyFrom ? '<button type="button" class="copy-btn">上のコードをコピー</button>' : ""}<button type="button" class="run-btn">▶ 実行する</button></div></div>
       <div class="status" role="status" aria-live="polite"></div>
       <div class="output" hidden><div class="output-head">実行結果 <span class="exit-code"></span></div><pre></pre></div>
     </div>

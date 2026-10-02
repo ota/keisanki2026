@@ -132,6 +132,7 @@ export function compareToSample(code, sampleLines) {
 }
 
 const kinds = [
+  ["given", "おさらい"],
   ["sample", "見本"],
   ["fix", "エラーを直す"],
   ["try", "確認"],

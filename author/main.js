@@ -241,7 +241,8 @@ function mountField(field) {
 
 function drawSamples() {
   for (const field of model.fields.filter(({ kind }) => kind === "code")) {
-    if (field.fix) {
+    // Fix and "given" code lives in the input, not in a sample canvas.
+    if (field.fix || field.prefilled) {
       page.querySelector(
         `[data-exercise="${field.exercise}"] .editor`,
       ).value = changes.get(field.key) ?? field.value;

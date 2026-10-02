@@ -154,11 +154,11 @@ export const outputs = {
   "compare": "a == b : 0\na != b : 1\na > b : 1\na < b : 0",
   "logic": "1\n0\n0",
   "order": "7\n9\n1",
-  "fix-equal": "a == b : 0",
-  "fix-range": "0",
-  "fix-average": "平均：7.500000",
   "task2": "z = 122\n100 = d",
   "task3": "78.50",
   "ext1": "2時間46分40秒",
-  "ext2": "167360円"
+  "ext2": "167360円",
+  "fix-equal": "a == b : 0",
+  "fix-range": "0",
+  "fix-average": "平均：7.500000"
 };

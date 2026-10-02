@@ -375,3 +375,19 @@ test("every lesson renders with balanced divs and keeps its progress setting", a
     assert.match(html, off ? /data-progress="off"/ : /data-progress="on"/, name);
   }
 });
+
+test("given exercises put working code into the input for students to run", async (t) => {
+  const code = '#include <stdio.h>\n\nint main(void) {\n    printf("ok\\n");\n    return 0;\n}';
+  const source =
+    lfOriginal.trimEnd() + `\n\n:::exercise review-one review.c given\n\`\`\`c\n${code}\n\`\`\`\n:::\n`;
+  const page = renderLesson(source, template, "lesson01.md");
+  assert.equal(page.samples["review-one"], undefined);
+  assert.match(page.html, /data-exercise="review-one" data-kind="given"/);
+  const escaped = code.replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  assert.ok(page.html.includes(`>${escaped}</textarea>`));
+  assert.ok(page.html.includes('<button type="button" class="reset-btn">最初のコードに戻す</button>'));
+  const { store } = await fixture(t, source);
+  const field = (await store.load("lesson01")).fields.find(({ exercise }) => exercise === "review-one");
+  assert.equal(field.prefilled, true);
+  assert.equal(field.value, code);
+});
